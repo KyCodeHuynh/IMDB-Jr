@@ -36,9 +36,17 @@
 
             <h2>Answer</h2>
             <?php
+                $expr = $_GET["expr"];
+                // Strip out trailing whitespace and newlines
+                // and convert all special characters into escaped versions
+                $expr = trim($expr);
+                $expr = htmlspecialchars($expr);
             ?>
             <p>
-                You entered: <?php echo $_GET["expr"]; ?>.
+                <?php 
+                    eval("\$answer = $expr;");
+                    echo $expr . " = " . $answer; 
+                ?>
             </p>
         </div>
     </body>
