@@ -36,8 +36,10 @@
 
             <h2>Answer</h2>
             <?php
-
             ?>
+            <p>
+                You entered: <?php echo $_GET["expr"]; ?>.
+            </p>
         </div>
     </body>
 </html>
