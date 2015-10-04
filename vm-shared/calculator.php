@@ -35,17 +35,26 @@
             </ul>
 
             <h2>Answer</h2>
-            <?php
-                $expr = $_GET["expr"];
-                // Strip out trailing whitespace and newlines
-                // and convert all special characters into escaped versions
-                $expr = trim($expr);
-                $expr = htmlspecialchars($expr);
-            ?>
             <p>
-                <?php 
-                    eval("\$answer = $expr;");
-                    echo $expr . " = " . $answer; 
+                <?php
+                    $expr = $_GET["expr"];
+                    // Strip out trailing whitespace and newlines
+                    // $expr = trim($expr);
+       
+                    // Display nothing for blank expressions
+                    if (empty($expr)) {
+                        echo "";
+                    }
+                    // Quick regexp reference found here:
+                    // https://secure.php.net/manual/en/function.preg-match.php
+                    // Invalid expression if anything but digits and operators.
+                    elseif (preg_match("/[a-zA-Z]/i", $expr)) {
+                        echo "Invalid expression. Please try again.";
+                    }
+                    else {
+                        eval("\$answer = $expr;");
+                        echo $expr . " = " . $answer; 
+                    }
                 ?>
             </p>
         </div>
