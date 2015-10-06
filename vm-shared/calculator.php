@@ -48,9 +48,18 @@
                     // Quick regexp reference found here:
                     // https://secure.php.net/manual/en/function.preg-match.php
                     // Invalid expression if anything but digits and operators.
-                    elseif (preg_match("/[a-zA-Z]/i", $expr)) {
+                    elseif (preg_match("/[^0-9\/\*\+\-\. ]/i", $expr)) {
                         echo "Invalid expression. Please try again.";
                     }
+
+                    // TRY ALL IN DEMO
+                    // TODO: Catch divide by 0 exception
+                    // TODO: Catch --- or ++ or ** or // (BUT -- allowed?)
+                    // TODO: Double-check Piazza for other cases
+                    // TODO: Double decimal points
+                    // TODO: Multiple decimal points
+                    // TODO: Space after decimal point
+
                     else {
                         eval("\$answer = $expr;");
                         echo $expr . " = " . $answer; 
