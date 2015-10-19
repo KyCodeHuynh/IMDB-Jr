@@ -34,7 +34,7 @@
                 <li>Invalid input will result in graceful error messages.</li>
             </ul>
 
-            <h2>Answer</h2>
+            <h2>Results</h2>
             <p>
                 <?php
                     $expr = $_GET["expr"];
