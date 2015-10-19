@@ -86,14 +86,8 @@
 
                 }           	
 
+        	mysql_close($db_connect); 
             ?>
         </div>
-        <?php 
-        	mysql_close($db_connect); 
-        ?>
     </body>
 </html>
-
-<?php
-
-?>
