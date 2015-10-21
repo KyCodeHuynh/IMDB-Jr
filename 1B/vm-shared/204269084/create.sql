@@ -30,27 +30,33 @@ CREATE TABLE Director (
 ) ENGINE=INNODB;
 
 CREATE TABLE MovieGenre (
-    mid INT REFERENCES Movie(id), # Movie ID - (1) foreign key to reference Movie
-    genre VARCHAR(20)             # Movie genre
+    mid INT,            # Movie ID 
+    genre VARCHAR(20),  # Movie genre
+    FOREIGN KEY (mid) REFERENCES Movie(id)    # (1) foreign key for the movie genre to reference a Movie ID  
 ) ENGINE=INNODB;
 
 CREATE TABLE MovieDirector (
-    mid INT REFERENCES Movie(id),   # Movie ID - (2) foreign key to reference Movie
-    did INT REFERENCES Director(id) # Director ID - (3) foreign key to reference Director
+    mid INT, # Movie ID 
+    did INT, # Director ID
+    FOREIGN KEY (mid) REFERENCES Movie(id),   # (2) foreign key to reference specific Movie ID to a director
+    FOREIGN KEY (did) REFERENCES Director(id) # (3) foreign key to reference specific Director ID to a movie
 ) ENGINE=INNODB;
 
 CREATE TABLE MovieActor (
-    mid INT REFERENCES Movie(id), # Movie ID - (4) foreign key to reference Movie
-    aid INT REFERENCES Actor(id), # Actor ID - (5) foreign key to reference Actor
-    role VARCHAR(50)              # Actor's role
+    mid INT, # Movie ID
+    aid INT, # Actor ID 
+    role VARCHAR(50), # Actor's role
+    FOREIGN KEY (mid) REFERENCES Movie(id),   # (4) foreign key to reference specific Movie ID the actor was in
+    FOREIGN KEY (aid) REFERENCES Actor(id)    # (5) foreign key to reference specific Actor who acted
 ) ENGINE=INNODB;
 
 CREATE TABLE Review (
-    name VARCHAR(20),    # Reviewer's name
-    time TIMESTAMP,      # Timestamp of review
-    mid INT REFERENCES Movie(id), # Movie reviewed - (6) foreign key to reference Movie
-    rating INT,          # Movie rating
-    comment VARCHAR(500) # Reviewer's comment
+    name VARCHAR(20),     # Reviewer's name
+    time TIMESTAMP,       # Timestamp of review
+    mid INT REFERENCES Movie(id), # Movie reviewed 
+    rating INT,           # Movie rating
+    comment VARCHAR(500), # Reviewer's comment
+    FOREIGN KEY (mid) REFERENCES Movie(id)     # (6) foreign key to reference Movie ID reviewed
 ) ENGINE=INNODB;
 
 CREATE TABLE MaxPersonID (

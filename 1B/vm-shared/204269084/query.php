@@ -7,7 +7,7 @@
 		}
 
 		// Select Database to work with
-		mysql_select_db("CS143", $db_connect);
+		mysql_select_db("TEST", $db_connect);
 	?>
     <head>
         <title>CS 143: Project 1B Query Page</title>
