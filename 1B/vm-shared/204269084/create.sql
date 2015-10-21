@@ -16,7 +16,7 @@ CREATE TABLE Actor (
     sex VARCHAR(6) NOT NULL,     # Actor's sex
     dob DATE,           # Date of birth
     dod DATE,            # Date of death
-    CHECK(sex = "female" OR sex = "male"), # Check Constraint (2): must be either female or male
+    CHECK(sex = 'female' OR sex = 'male'), # Check Constraint (2): must be either female or male
     CHECK(dob > 0 AND dob < 20151020) # Check Constraint (3): date of birth must be greater than 0
                                       # date of birth must also be before today's date, 10/20/2015
 ) ENGINE=INNODB;
@@ -53,7 +53,7 @@ CREATE TABLE MovieActor (
 CREATE TABLE Review (
     name VARCHAR(20),     # Reviewer's name
     time TIMESTAMP,       # Timestamp of review
-    mid INT REFERENCES Movie(id), # Movie reviewed 
+    mid INT,              # Movie reviewed 
     rating INT,           # Movie rating
     comment VARCHAR(500), # Reviewer's comment
     FOREIGN KEY (mid) REFERENCES Movie(id)     # (6) foreign key to reference Movie ID reviewed
