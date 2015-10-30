@@ -10,8 +10,8 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.00"/>
 
     <!-- CSS stylesheets -->
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="./css/styles.css"
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min  .css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css"
 
     <!-- Database set-up -->
     <?php
