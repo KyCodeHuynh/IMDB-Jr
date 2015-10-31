@@ -58,37 +58,110 @@
     <div class="container theme-showcase">
       <div class="jumbotron">
           <h1>Movie Profile</h1>
-      </div>
-        <p>Search for an actor or movie in our database</p>    
-        <form method="GET">
-          <textarea name="query" cols="50" rows="6"></textarea>
-          <br>
-          <input type="submit" value="Submit">
-        </form>  
+      </div>  
           <?php 
               // Prints out movie info from the table
-              function printInfo($tbl_results) {
+              function printMovieInfo($tbl_results) {
+                // Sanity check
                 if (mysql_num_rows($tbl_results) == 0) {
-                  print "Nothing was found for this query.";
+                  print "This movie was not found in our database.";
                 }
 
                 // find out how many columns there are
                 $field_num = mysql_num_fields($tbl_results);
+                $movie_row = mysql_fetch_row($tbl_results);
 
-                for ($j = 0; $j < $field_num; $j++) {
-                  // Make sure to combine the first and last name
-                  // It's more boilerplate code because we need to specify that first name comes after last name
+                // Starts at j=1 to ignore the first mid
+                for ($j = 1; $j < $field_num; $j++) {
                   $field_name = mysql_field_name($tbl_results, $j);
-                  if ($field_name == "last") {
-                    print "Name: ".$row[$j]." ".$row[$j+1];
-                    $j++;
-                  } else {
-                    $item = $row[$j];
-                    print "$field_name: ".$item."<br>";
+                  if($field_name != "mid") {
+                    $item = $movie_row[$j];
+                    print ucwords($field_name).": ".$item."<br>";
                   }
                 }
               }
 
+              function printDirectorInfo($tbl_results) {
+                if (mysql_num_rows($tbl_results) == 0) {
+                  print "No director was found in our database.";
+                } else {
+                    // find out how many columns there are
+                  $field_num = mysql_num_fields($tbl_results);
+                  $row_num = mysql_num_rows($tbl_results);
+                  print "Director: ";
+
+                  // Changed to for loop to keep track of how many directors there are
+                  for($i = 0; $i < $row_num; $i++) {
+                    $dir_row = mysql_fetch_row($tbl_results);
+                    // Starts at j=1 to ignore the first mid
+                    for ($j = 1; $j < $field_num; $j++) {
+                      $field_name = mysql_field_name($tbl_results, $j);
+                      if($field_name == "last") {
+                        print $dir_row[$j+1]." ".$dir_row[$j]." (".$dir_row[$j+2].")";
+                        break;
+                      }
+                    }
+                    // Adds commas if there are multiple actors
+                    if (($i+1) < $row_num) {
+                      print ", ";
+                    }
+                  }
+                }
+              }
+
+              // TODO: PRINT OUT <a href> so that we can have the actors have links to their profiles.. 
+              // CAN'T fully do it until "show Actors" page is created
+              // Also --- the mid is part of the table so you can reference it with act_row[3]
+
+              function printActorInfo($tbl_results) {
+                if (mysql_num_rows($tbl_results) == 0) {
+                  print "No actors/actresses were found in our database.";
+                } else {
+                    // find out how many rows there are
+                  $row_num = mysql_num_rows($tbl_results);
+                  print "<p> Actors/Actresses featured in this film: </p>";
+
+                  // Since we customized our table to have "first name, last name, role, mid"
+                  // I hard-coded the numbers for the display
+                  // (Ideally we would want to use variables if we changed the order)
+                  for($i = 0; $i < $row_num; $i++) {
+                    $act_row = mysql_fetch_row($tbl_results);
+                    print $act_row[0]." ".$act_row[1]." as ".$act_row[2]."<br>" ;
+                  }
+                }
+              }
+
+              $mid = $_GET["mid"];  
+              if (empty($mid)) {
+                echo "The movie you are searching for is now unavailable.";
+              } else {
+                $movie_query = "SELECT * FROM Movie AS M, MovieGenre AS G WHERE M.id = ".$mid." AND G.mid = ".$mid.";";
+                $mov_results = mysql_query($movie_query, $db_connect); 
+
+                if (mysql_num_rows($mov_results) == 0) {
+                  print "This movie was not found in our database.";
+                } else {
+                  $director_query = "SELECT * FROM Director AS D WHERE D.id IN (SELECT did FROM MovieDirector WHERE mid = ".$mid.");";
+                  $director_results = mysql_query($director_query, $db_connect);
+
+                  $actor_query = "SELECT Act.first, Act.last, Mov.role, Mov.mid FROM MovieActor AS Mov, Actor AS Act WHERE Mov.mid = ".$mid." AND Act.id = Mov.aid;";
+                  $actor_results = mysql_query($actor_query, $db_connect);                  
+
+                  printMovieInfo($mov_results); 
+                  printDirectorInfo($director_results);
+                  printActorInfo($actor_results);                  
+                }
+              }
+          ?>
+          <br>
+          <p>Search for a Movie or Actor/Actress:</p>
+          <form method="GET">
+          <textarea name="query" cols="50" rows="1"></textarea>
+          <br>
+          <input type="submit" value="Submit">
+          </form>  
+
+          <?php 
               // Logic for Search Engine of mini IMDB site!
               // For Movies:
               //    Look up any movie where the title contains all the words in the search query
@@ -103,6 +176,9 @@
               //         b) So if typing "Oprah" -- you would find "Oprah Winfrey"
               //         c) If typing "Win" -- you would find any value that has "Win" in the first or last name
               //         d) If typing anything greater than 3, we'll look for any pattern that matches all three, although its most likely improbable.. more for movie titles     
+
+              // LINK BACK TO THE OTHER PAGE
+
               // $query = $_GET["query"];  
               // if (empty($query)) {
               //     echo "";
