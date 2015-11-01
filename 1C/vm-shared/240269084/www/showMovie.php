@@ -119,7 +119,7 @@
                 } else {
                     // find out how many rows there are
                   $row_num = mysql_num_rows($tbl_results);
-                  print "<p> Actors/Actresses featured in this film: </p>";
+                  print "<h3> Actors/Actresses featured in this film: </h3>";
 
                   // Since we customized our table to have "first name, last name, role, mid"
                   // I hard-coded the numbers for the display
@@ -130,6 +130,19 @@
                   }
                 }
               }
+
+              function printCommentInfo($tbl_results, $row_num) {
+                print "<b>Comments</b><br><br>";
+                // Since we customized our table to have "first name, last name, role, mid"
+                // I hard-coded the numbers for the display
+                // (Ideally we would want to use variables if we changed the order)
+                for($i = 0; $i < $row_num; $i++) {
+                  $act_row = mysql_fetch_row($tbl_results);
+                  // We want to have the name first, then their time stamp under, then their comment
+                  print $act_row[0]." || <i>".$act_row[1]."</i> || Rating: ".$act_row[3]."<br>Comment: ".$act_row[4]."<br><br>";
+                }
+              }
+              
 
               $mid = $_GET["mid"];  
               if (empty($mid)) {
@@ -149,11 +162,27 @@
 
                   printMovieInfo($mov_results); 
                   printDirectorInfo($director_results);
-                  printActorInfo($actor_results);                  
+                  printActorInfo($actor_results);
+
+                  $user_query1 = "SELECT * FROM Review WHERE mid=".$mid.";";
+                  $user_query2 = "SELECT AVG(rating) FROM Review WHERE mid=".$mid.";";
+                  $user_results = mysql_query($user_query1, $db_connect);   
+                  $user_average = mysql_query($user_query2, $db_connect); 
+                  $row_num = mysql_num_rows($user_results);
+                  if ($row_num != 0) {
+                    $avg = mysql_fetch_row($user_average);
+                    print "<h3>User Reviews || Average Rating (out of ".$row_num." reviews): ".$avg[0]."</h3>";
+                    printCommentInfo($user_results, $row_num);
+                  } else {
+                    print "There are no user reviews for this movie. <Add your review here!>";  
+                  }
+
                 }
               }
           ?>
           <br>
+
+          <!-- Submit this to the "search page" -->
           <p>Search for a Movie or Actor/Actress:</p>
           <form method="GET">
           <textarea name="query" cols="50" rows="1"></textarea>
@@ -236,7 +265,6 @@
               //     makeTable($results3);
               //   }
               // }             
-            mysql_close($db_connect); 
           ?>
 
     </div>
