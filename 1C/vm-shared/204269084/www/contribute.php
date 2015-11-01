@@ -50,7 +50,7 @@
           <br>
           <span>
             Date of birth:
-            <input type="text" name="birth_date" placeholder="YYYYMMDD">
+            <input type="text" name="birth_date" placeholder="YYYY-MM-DD">
             Date of death:
             <input type="text" name="death_date" placeholder="NULL if N/A">
           </span>
@@ -75,12 +75,13 @@
     <?php 
       // Having a link identifier lets MySQL determine the character set to use
       // See: http://bit.ly/1isaeWS
-      $first_name = mysql_real_escape_string($_GET['first_name'], $db_connect);
+      $person_type = mysql_real_escape_string($_GET['person_type']), $db_connect);
+      $person_id = 0; // TODO: Get ID
       $last_name = mysql_real_escape_string($_GET['last_name'], $db_connect);
+      $first_name = mysql_real_escape_string($_GET['first_name'], $db_connect);
+      $sex = mysql_real_escape_string($_GET['sex']), $db_connect);
       $birth_date = mysql_real_escape_string($_GET['birth_date'], $db_connect);
       $death_date = mysql_real_escape_string($_GET['death_date'], $db_connect);
-      $person_type = mysql_real_escape_string($_GET['person_type']), $db_connect);
-      $sex = mysql_real_escape_string($_GET['sex']), $db_connect);
 
       // TODO: Handle missing field input
       // if (empty($query)) {
@@ -88,8 +89,19 @@
       // }
       // else
 
+      // Create SQL query of form INSERT INTO <table> VALUES (301, "Laro", ...)
+      $insert = "INSERT INTO " . $person_type 
+              . "VALUES" . "("
+              . $person_id . ","
+              . $last_name . ","
+              . $first_name . ","
+              . $sex . ","
+              . $birth_date . ","
+              . $death_date . 
+              . ")";
 
-      // TODO: Need to get and update MaxPersonID too
+      // Apply the query 
+      mysql_query($insert, $db_connect);
      ?>
 
     <div class="container">
