@@ -57,44 +57,140 @@
   <body>
     <div class="container theme-showcase">
       <div class="jumbotron">
-          <h1>Search</h1>
-      </div>
-        <p>Search for an actor or movie in our database</p>    
-        <form method="GET">
-          <textarea name="query" cols="50" rows="6"></textarea>
-          <br>
-          <input type="submit" value="Submit">
-        </form>  
+          <h1>Movie Profile</h1>
+      </div>  
           <?php 
-              function makeTable($tbl_results) {
-                if (count($tbl_results) == 0) {
-                  print "Nothing was found for this query.";
+              // Prints out movie info from the table
+              function printMovieInfo($tbl_results) {
+                // Sanity check
+                if (mysql_num_rows($tbl_results) == 0) {
+                  print "This movie was not found in our database.";
                 }
-                // print out results in a table
-                print "<table>";
 
                 // find out how many columns there are
                 $field_num = mysql_num_fields($tbl_results);
+                $movie_row = mysql_fetch_row($tbl_results);
 
-                // Create the first row - names
-                print "<tr class='bold'>";
-                for ($j = 0; $j < $field_num; $j++) {
+                // Starts at j=1 to ignore the first mid
+                for ($j = 1; $j < $field_num; $j++) {
                   $field_name = mysql_field_name($tbl_results, $j);
-                  print "<td>$field_name</td>";
+                  if($field_name != "mid") {
+                    $item = $movie_row[$j];
+                    print ucwords($field_name).": ".$item."<br>";
+                  }
                 }
-                print "</tr>";
-
-                while ($row = mysql_fetch_row($tbl_results)) {
-                  print "<tr>";
-                  for ($i = 0; $i < $field_num; $i++) {
-                    $item = $row[$i];
-                    print "<td>$item</td>";
-                  }     
-                  print "</tr>";
-                }
-                print "</table>";
               }
 
+              function printDirectorInfo($tbl_results) {
+                if (mysql_num_rows($tbl_results) == 0) {
+                  print "No director was found in our database.";
+                } else {
+                    // find out how many columns there are
+                  $field_num = mysql_num_fields($tbl_results);
+                  $row_num = mysql_num_rows($tbl_results);
+                  print "Director: ";
+
+                  // Changed to for loop to keep track of how many directors there are
+                  for($i = 0; $i < $row_num; $i++) {
+                    $dir_row = mysql_fetch_row($tbl_results);
+                    // Starts at j=1 to ignore the first mid
+                    for ($j = 1; $j < $field_num; $j++) {
+                      $field_name = mysql_field_name($tbl_results, $j);
+                      if($field_name == "last") {
+                        print $dir_row[$j+1]." ".$dir_row[$j]." (".$dir_row[$j+2].")";
+                        break;
+                      }
+                    }
+                    // Adds commas if there are multiple actors
+                    if (($i+1) < $row_num) {
+                      print ", ";
+                    }
+                  }
+                }
+              }
+
+              // TODO: PRINT OUT <a href> so that we can have the actors have links to their profiles.. 
+              // CAN'T fully do it until "show Actors" page is created
+              // Also --- the mid is part of the table so you can reference it with act_row[3]
+
+              function printActorInfo($tbl_results) {
+                if (mysql_num_rows($tbl_results) == 0) {
+                  print "No actors/actresses were found in our database.";
+                } else {
+                    // find out how many rows there are
+                  $row_num = mysql_num_rows($tbl_results);
+                  print "<h3> Actors/Actresses featured in this film: </h3>";
+
+                  // Since we customized our table to have "first name, last name, role, mid"
+                  // I hard-coded the numbers for the display
+                  // (Ideally we would want to use variables if we changed the order)
+                  for($i = 0; $i < $row_num; $i++) {
+                    $act_row = mysql_fetch_row($tbl_results);
+                    print $act_row[0]." ".$act_row[1]." as ".$act_row[2]."<br>" ;
+                  }
+                }
+              }
+
+              function printCommentInfo($tbl_results, $row_num) {
+                print "<b>Comments</b><br><br>";
+                // Since we customized our table to have "first name, last name, role, mid"
+                // I hard-coded the numbers for the display
+                // (Ideally we would want to use variables if we changed the order)
+                for($i = 0; $i < $row_num; $i++) {
+                  $act_row = mysql_fetch_row($tbl_results);
+                  // We want to have the name first, then their time stamp under, then their comment
+                  print $act_row[0]." || <i>".$act_row[1]."</i> || Rating: ".$act_row[3]."<br>Comment: ".$act_row[4]."<br><br>";
+                }
+              }
+              
+
+              $mid = $_GET["mid"];  
+              if (empty($mid)) {
+                echo "The movie you are searching for is now unavailable.";
+              } else {
+                $movie_query = "SELECT * FROM Movie AS M, MovieGenre AS G WHERE M.id = ".$mid." AND G.mid = ".$mid.";";
+                $mov_results = mysql_query($movie_query, $db_connect); 
+
+                if (mysql_num_rows($mov_results) == 0) {
+                  print "This movie was not found in our database.";
+                } else {
+                  $director_query = "SELECT * FROM Director AS D WHERE D.id IN (SELECT did FROM MovieDirector WHERE mid = ".$mid.");";
+                  $director_results = mysql_query($director_query, $db_connect);
+
+                  $actor_query = "SELECT Act.first, Act.last, Mov.role, Mov.mid FROM MovieActor AS Mov, Actor AS Act WHERE Mov.mid = ".$mid." AND Act.id = Mov.aid;";
+                  $actor_results = mysql_query($actor_query, $db_connect);                  
+
+                  printMovieInfo($mov_results); 
+                  printDirectorInfo($director_results);
+                  printActorInfo($actor_results);
+
+                  $user_query1 = "SELECT * FROM Review WHERE mid=".$mid.";";
+                  $user_query2 = "SELECT AVG(rating) FROM Review WHERE mid=".$mid.";";
+                  $user_results = mysql_query($user_query1, $db_connect);   
+                  $user_average = mysql_query($user_query2, $db_connect); 
+                  $row_num = mysql_num_rows($user_results);
+                  if ($row_num != 0) {
+                    $avg = mysql_fetch_row($user_average);
+                    print "<h3>User Reviews || Average Rating (out of ".$row_num." reviews): ".$avg[0]."</h3>";
+                    printCommentInfo($user_results, $row_num);
+                  } else {
+                    print "There are no user reviews for this movie. <Add your review here!>";  
+                  }
+
+                }
+              }
+          ?>
+          <br>
+
+          <!-- Submit this to the "search page" -->
+          <p>Search for a Movie or Actor/Actress:</p>
+          <form method="GET">
+          <textarea name="query" cols="50" rows="1"></textarea>
+          <br>
+          <input type="submit" value="Submit">
+          </form>  
+
+          <?php 
               // Logic for Search Engine of mini IMDB site!
               // For Movies:
               //    Look up any movie where the title contains all the words in the search query
@@ -109,64 +205,66 @@
               //         b) So if typing "Oprah" -- you would find "Oprah Winfrey"
               //         c) If typing "Win" -- you would find any value that has "Win" in the first or last name
               //         d) If typing anything greater than 3, we'll look for any pattern that matches all three, although its most likely improbable.. more for movie titles     
-              $query = $_GET["query"];  
-              if (empty($query)) {
-                  echo "";
-              } else {
-                // if the input is not empty, query MySQL and get results
-                print "<h2>Results From MySQL</h2>";
-                $sanitized = mysql_real_escape_string($query, $db_connect);
-                // Separate search words like "Tom Hanks" ."%"to include AND
-                $separate_words = explode(" ", $sanitized);
-                $and_words = "\"%".$separate_words[0]."%\"";
-                $num_of_words = count($separate_words);
-                $found_query = false;
 
-                for ($k = 1; $k < $num_of_words; $k++) {
-                    $and_words .= " AND "."\"%".$separate_words[$k]."%\"";
-                }
+              // LINK BACK TO THE OTHER PAGE
 
-                // Create MySQL Query
-                $statement = "SELECT * FROM Movie AS M WHERE M.title LIKE ".$and_words.";";
+              // $query = $_GET["query"];  
+              // if (empty($query)) {
+              //     echo "";
+              // } else {
+              //   // if the input is not empty, query MySQL and get results
+              //   print "<h2>Results From MySQL</h2>";
+              //   $sanitized = mysql_real_escape_string($query, $db_connect);
+              //   // Separate search words like "Tom Hanks" ."%"to include AND
+              //   $separate_words = explode(" ", $sanitized);
+              //   $and_words = "\"%".$separate_words[0]."%\"";
+              //   $num_of_words = count($separate_words);
+              //   $found_query = false;
 
-                print "CHECKING MOVIES...";
-                // SEND THE RESULT AS A QUERY TO THE DATABASE
-                $results = mysql_query($statement, $db_connect);                 
-                makeTable($results);
+              //   for ($k = 1; $k < $num_of_words; $k++) {
+              //       $and_words .= " AND "."\"%".$separate_words[$k]."%\"";
+              //   }
 
-                // CHECKING ACTOR
-                print "<br>CHECKING ACTORS...";
+              //   // Create MySQL Query
+              //   $statement = "SELECT * FROM Movie AS M WHERE M.title LIKE ".$and_words.";";
 
-                // If there are two arguments for the query, then try first name, last name
-                if(count($separate_words) == 2) {
-                  $statement2 = "SELECT * FROM Actor AS A WHERE (A.first=\"".$separate_words[0]."\" AND "."A.last=\"".$separate_words[1]."\") OR (A.first=\"".$separate_words[1]."\" AND "."A.last=\"".$separate_words[0]."\");";
+              //   print "CHECKING MOVIES...";
+              //   // SEND THE RESULT AS A QUERY TO THE DATABASE
+              //   $results = mysql_query($statement, $db_connect);                 
+              //   makeTable($results);
 
-                  $results2 = mysql_query($statement2, $db_connect);                 
-                  makeTable($results2);
+              //   // CHECKING ACTOR
+              //   print "<br>CHECKING ACTORS...";
 
-                  // If there was something found, then we end here
-                  if(mysql_num_rows($results2) > 0) {
-                    $found_query = true;
-                    makeTable($results2);                      
-                  } else {
-                    // Look for for pattern where (first LIKE "tom", last LIKE "hanks") or (first LIKE "hanks", last LIKE "tom")
-                    $statement3 = "SELECT * FROM Actor AS A WHERE (A.first LIKE \"".$separate_words[0]."%\" AND "."A.last LIKE \"".$separate_words[1]."%\") OR (A.first LIKE \"".$separate_words[1]."%\" AND "."A.last LIKE \"".$separate_words[0]."%\");";      
-                    $results3 = mysql_query($statement3, $db_connect);                 
-                    if(mysql_num_rows($results3) > 0) {
-                      $found_query = true;
-                      makeTable($results3);                        
-                    }
-                  }
-                } 
+              //   // If there are two arguments for the query, then try first name, last name
+              //   if(count($separate_words) == 2) {
+              //     $statement2 = "SELECT * FROM Actor AS A WHERE (A.first=\"".$separate_words[0]."\" AND "."A.last=\"".$separate_words[1]."\") OR (A.first=\"".$separate_words[1]."\" AND "."A.last=\"".$separate_words[0]."\");";
 
-                // If the count is not two, try to find anything similar to the search query 
-                else if($found_query == false) {
-                  $statement4 = "SELECT * FROM Actor AS A WHERE A.first LIKE ".$and_words." OR A.last LIKE".$and_words.";";
-                  $results3 = mysql_query($statement4, $db_connect);                 
-                  makeTable($results3);
-                }
-              }             
-            mysql_close($db_connect); 
+              //     $results2 = mysql_query($statement2, $db_connect);                 
+              //     makeTable($results2);
+
+              //     // If there was something found, then we end here
+              //     if(mysql_num_rows($results2) > 0) {
+              //       $found_query = true;
+              //       makeTable($results2);                      
+              //     } else {
+              //       // Look for for pattern where (first LIKE "tom", last LIKE "hanks") or (first LIKE "hanks", last LIKE "tom")
+              //       $statement3 = "SELECT * FROM Actor AS A WHERE (A.first LIKE \"".$separate_words[0]."%\" AND "."A.last LIKE \"".$separate_words[1]."%\") OR (A.first LIKE \"".$separate_words[1]."%\" AND "."A.last LIKE \"".$separate_words[0]."%\");";      
+              //       $results3 = mysql_query($statement3, $db_connect);                 
+              //       if(mysql_num_rows($results3) > 0) {
+              //         $found_query = true;
+              //         makeTable($results3);                        
+              //       }
+              //     }
+              //   } 
+
+              //   // If the count is not two, try to find anything similar to the search query 
+              //   else if($found_query == false) {
+              //     $statement4 = "SELECT * FROM Actor AS A WHERE A.first LIKE ".$and_words." OR A.last LIKE".$and_words.";";
+              //     $results3 = mysql_query($statement4, $db_connect);                 
+              //     makeTable($results3);
+              //   }
+              // }             
           ?>
 
     </div>
