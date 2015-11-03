@@ -11,7 +11,7 @@
 
     <!-- CSS stylesheets -->
     <link rel="stylesheet" type="text/css" href="css/foundation.min.css">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
 
     <!-- Database set-up -->
     <?php

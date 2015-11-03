@@ -70,7 +70,7 @@
             <br>
             <!-- TODO: Get a nicer submit button -->
             <input type="submit" value="Submit">
-            <input type="reset" value="Reset"
+            <input type="reset" value="Reset">  
           </fieldset>
         </form>
       </div>
