@@ -34,7 +34,7 @@
   <!-- BODY -->
   <body>
     <div class="row">
-      <h1>Add Person</h1>
+      <h1><a href=".">Add Person</a></h1>
       <div class="large-12 columns">
         <form method="GET">
           <!-- Fieldset just groups together related form data -->
@@ -58,8 +58,8 @@
             <!-- Actor or director? -->
             <br>
             <span>
-              <input type="radio" name="person_type" value="actor" autocomplete="off"><label>Actor</label>
-              <input type="radio" name="person_type" value="director" autocomplete="off"><label>Director</label>
+              <input type="radio" name="person_type" value="Actor" autocomplete="off"><label>Actor</label>
+              <input type="radio" name="person_type" value="Director" autocomplete="off"><label>Director</label>
             </span>
             <!-- Female or male? -->
             <br>
@@ -78,9 +78,9 @@
 
     <?php 
       // Show errors in PHP
-      // ini_set('display_errors', 1);
-      // ini_set('display_startup_errors', 1);
-      // error_reporting(E_ALL);
+      ini_set('display_errors', 1);
+      ini_set('display_startup_errors', 1);
+      error_reporting(E_ALL);
 
       // Having a link identifier lets MySQL determine the character set to use
       // See: http://bit.ly/1isaeWS
@@ -95,14 +95,13 @@
       if ( empty($person_type) 
         || empty($last_name)
         || empty($first_name)
-        || empty($sex)
         || empty($birth_date)
         || empty($death_date) 
       ) {
         echo "<div class=\"row\">
                 <div class=\"large-12 columns\">
                   <p>
-                    All fields are required. Please try again.
+                    All fields are required.
                   </p>
                 </div>
               </div>";
@@ -110,20 +109,50 @@
       else {
         // TODO: Fix getting and updating the person's ID
         // Update the max ID for a new person
-        $id_update = "INSERT INTO MaxPersonID VALUES (id = (SELECT * FROM MaxPersonID) + 1);";
+        $id_update = "UPDATE MaxPersonID SET id=id+1";
         mysql_query($id_update, $db_connect);
-        echo "The result of the ID update: " . $id_update;
 
         // Get person's ID
         $id_query = "SELECT * FROM MaxPersonID;";
-        $person_id = mysql_query($id_query, $db_connect);
+        $result = mysql_query($id_query, $db_connect);
+        $person_id = mysql_fetch_row($result)[0];
 
-        // Create SQL query of form INSERT INTO <table> VALUES (301, "Laro", ...)
-        $insert = "INSERT INTO %s VALUES(%s, %s, %s, %s, %s, %s);";
-        $insert = sprintf($insert, $person_type, $person_id, $last_name, $first_name, $sex, $birth_date, $death_date);
+        // TODO: Debugging only
+        echo "<div class=\"row\">
+                <div class=\"large-12 columns\">
+                  <br>
+                  <p>The attempted ID update:</p>
+                  <pre>" .
+                    $id_update
+                  .
+                  "</pre>
+
+                  <br>
+                  <p>The returned ID:</p>
+                  <pre>" .
+                    $person_id
+                  .
+                  "</pre>
+                </div>
+              </div>";
+
+        if ($person_type == "Actor") {
+          // Create SQL query of form INSERT INTO <table> VALUES (301, "Laro", ...)
+          $insert = "INSERT INTO Actor (id, last, first, sex, dob, dod) 
+            VALUES (%s, '%s', '%s', '%s', CAST('%s' AS DATE), (CAST '%s' AS DATE));";
+          $insert = sprintf($insert, $person_id, $last_name, $first_name, $sex, $birth_date, $death_date);
+        }
+        else {
+          // Director has a slightly different schema
+          // TODO: Director insert is not working for some reason
+          $insert = "INSERT INTO Director (id, last, first, dob, dod) 
+            VALUES (%s, '%s', '%s', (CAST '%s' AS DATE), (CAST '%s' AS DATE));";
+          $insert = sprintf($insert, $person_id, $last_name, $first_name, $birth_date, $death_date);
+        }
         
         echo "<div class=\"row\">
                 <div class=\"large-12 columns\">
+                  <br>
                   <p>Your query:</p>
                   <pre>" .
                     $insert
