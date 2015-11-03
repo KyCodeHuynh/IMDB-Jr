@@ -27,31 +27,6 @@
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect);
      ?>
-      <style type="text/css">
-        .centered {
-            text-align: left;
-            border: 0px;
-            padding: 0;
-            margin-left: auto;
-            margin-right: auto;
-            display: table;
-        }
-
-        #example {
-          font-style: italic;
-        }
-
-        table, th, td {
-          text-align: center;
-          border: 1px solid black;
-          border-spacing: 1;
-          padding: 2;
-        }
-
-        .bold {
-          font-weight: bold;
-        }
-    </style>
   </head>
 
   <body>
