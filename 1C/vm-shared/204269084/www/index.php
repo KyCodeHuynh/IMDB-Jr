@@ -10,7 +10,7 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.00"/>
 
     <!-- CSS stylesheets -->
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="css/foundation.min.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
 
     <!-- Database set-up -->
@@ -31,11 +31,20 @@
 
   <body>
     <div class="container theme-showcase">
-      <div class="jumbotron">
+      <div class="panel">
           <h1>Welcome</h1>
       </div>
 
-      <!-- TODO: Link to the other pages! -->
+      <div class="container">
+
+      </div>
+
+      <!-- TODO: Introduce a snazzy navbar! -->
+      <ul>
+        <li><a href="search.php">Search</a></li>
+        <li><a href="showMovie.php">Show Movies</a></li>
+        <li><a href="contribute.php">Contribute to IMDB Jr.</a></li>
+      </ul>
 
       <!-- TODO: replace with copy text -->
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui fugiat
@@ -92,8 +101,8 @@
      ?>
 
     <!-- JavaScript -->
-    <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/foundation.min.js"></script
   </body>
 </html>
 

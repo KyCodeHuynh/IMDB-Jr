@@ -1,4 +1,4 @@
-<!-- Lets users add information about actors, directors, movies, plus comments -->
+<!-- Lets users add information about actors or directors -->
 <!DOCTYPE htmL> 
 <html>
   <!-- HEAD -->
@@ -70,6 +70,7 @@
             <br>
             <!-- TODO: Get a nicer submit button -->
             <input type="submit" value="Submit">
+            <input type="reset" value="Reset"
           </fieldset>
         </form>
       </div>
@@ -107,6 +108,7 @@
               </div>";
       }
       else {
+        // TODO: Fix getting and updating the person's ID
         // Update the max ID for a new person
         $id_update = "INSERT INTO MaxPersonID VALUES (id = (SELECT * FROM MaxPersonID) + 1);";
         mysql_query($id_update, $db_connect);
@@ -142,24 +144,7 @@
       }
       ?>
 
-    <div class="row">
-      <div class="large-12 columns">
-        <h1>Add Movie</h1>
-        <form method="GET">
-          <textarea name="director-name" cols="100" rows="1"></textarea>
-          <br/>
-          <!-- Since '#' means we go to the current page, the GET request
-               URL parameters will be passed on from our filled-out forms -->
-          <input type="submit" value="Submit">
-        </form>
-      </div>
-    </div>
-
-    <!-- TODO: Movie info -->
-    <!-- TODO: Movie comments -->
-    <!-- TODO: Movie reviews require a TIMESTAMP -->
-    <!-- TODO: Actor to movie relation -->
-    <!-- TODO: Director to movie relation -->
+   
 
     <!-- Never forget to close an opened resource -->
     <?php 

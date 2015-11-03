@@ -10,8 +10,8 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.00"/>
 
     <!-- CSS stylesheets -->
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="./css/styles.css"
+    <link rel="stylesheet" type="text/css" href="css/foundation.min.css">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
 
     <!-- Database set-up -->
     <?php
@@ -55,16 +55,16 @@
   </head>
 
   <body>
-    <div class="container theme-showcase">
-      <div class="jumbotron">
-          <h1>Search</h1>
-      </div>
-        <p>Search for an actor or movie in our database</p>    
-        <form method="GET">
-          <textarea name="query" cols="50" rows="6"></textarea>
-          <br>
-          <input type="submit" value="Submit">
-        </form>  
+    <div class="row">
+      <h1>Search</h1>
+      <div class="large-12 columns">
+        <div>
+          <p>Search for an actor or movie in our database</p>    
+          <form method="GET">
+            <textarea name="query" cols="50" rows="6"></textarea>
+            <br>
+            <input type="submit" value="Submit">
+          </form>  
           <?php 
               function makeTable($tbl_results) {
                 if (count($tbl_results) == 0) {
@@ -168,7 +168,8 @@
               }             
             mysql_close($db_connect); 
           ?>
-
+        </div>
+      </div>
     </div>
     
     <!-- Never forget to close an opened resource -->
@@ -177,8 +178,8 @@
      ?>
 
     <!-- JavaScript -->
-    <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/foundation.min.js"></script>
   </body>
 </html>
 

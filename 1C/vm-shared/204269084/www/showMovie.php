@@ -10,8 +10,8 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.00"/>
 
     <!-- CSS stylesheets -->
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="./css/styles.css"
+    <link rel="stylesheet" type="text/css" href="css/foundation.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
 
     <!-- Database set-up -->
     <?php
@@ -275,8 +275,8 @@
      ?>
 
     <!-- JavaScript -->
-    <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/foundation.min.js"></script
   </body>
 </html>
 
