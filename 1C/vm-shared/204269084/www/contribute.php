@@ -12,8 +12,8 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.00"/>
 
     <!-- CSS stylesheets -->
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/foundation.min.css">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
 
     <!-- Database set-up -->
     <?php
@@ -33,84 +33,126 @@
 
   <!-- BODY -->
   <body>
-    <h1>Add Person</h1>
-    <div class="container">
-      <form method="GET">
-        <!-- Fieldset just groups together related form data -->
-        <fieldset>
-          <legend>Actor/director information</legend>
-          <!-- Names -->
-          <span>
-            First name:
-            <input type="text" name="first_name">
-            Last name:
-            <input type="text" name="last_name">
-          </span>
-          <!-- DOB and DOD -->
-          <br>
-          <span>
-            Date of birth:
-            <input type="text" name="birth_date" placeholder="YYYY-MM-DD">
-            Date of death:
-            <input type="text" name="death_date" placeholder="NULL if N/A">
-          </span>
-          <!-- Actor or director? -->
-          <br>
-          <span>
-            <input type="radio" name="person_type" value="actor" checked>Actor
-            <input type="radio" name="person_type" value="director">Director 
-          </span>
-          <!-- Female or male? -->
-          <br>
-          <span>
-            <input type="radio" name="sex" value="female" checked>Female
-            <input type="radio" name="sex" value="male">Male
-          </span>
-          <br>
-          <input type="submit" value="Submit">
-        </fieldset>
-      </form>
+    <div class="row">
+      <h1>Add Person</h1>
+      <div class="large-12 columns">
+        <form method="GET">
+          <!-- Fieldset just groups together related form data -->
+          <fieldset>
+            <legend>Actor/director information</legend>
+            <!-- Names -->
+            <span>
+              <label>First name:</label>
+              <input type="text" name="first_name" autocomplete="off">
+              <label>Last name:</label>
+              <input type="text" name="last_name" autocomplete="off">
+            </span>
+            <!-- DOB and DOD -->
+            <br>
+            <span>
+              <label>Date of birth:</label>
+              <input type="text" name="birth_date" placeholder="YYYY-MM-DD" autocomplete="off">
+              <label>Date of death:</label>
+              <input type="text" name="death_date" placeholder="NULL if N/A" autocomplete="off">
+            </span>
+            <!-- Actor or director? -->
+            <br>
+            <span>
+              <input type="radio" name="person_type" value="actor" autocomplete="off"><label>Actor</label>
+              <input type="radio" name="person_type" value="director" autocomplete="off"><label>Director</label>
+            </span>
+            <!-- Female or male? -->
+            <br>
+            <span>
+              <input type="radio" name="sex" value="female" autocomplete="off"><label>Female</label>
+              <input type="radio" name="sex" value="male" autocomplete="off"><label>Male</label>
+            </span>
+            <br>
+            <!-- TODO: Get a nicer submit button -->
+            <input type="submit" value="Submit">
+          </fieldset>
+        </form>
+      </div>
     </div>
 
     <?php 
+      // Show errors in PHP
+      // ini_set('display_errors', 1);
+      // ini_set('display_startup_errors', 1);
+      // error_reporting(E_ALL);
+
       // Having a link identifier lets MySQL determine the character set to use
       // See: http://bit.ly/1isaeWS
-      $person_type = mysql_real_escape_string($_GET['person_type']), $db_connect);
-      $person_id = 0; // TODO: Get ID
+      $person_type = mysql_real_escape_string($_GET['person_type'], $db_connect);
       $last_name = mysql_real_escape_string($_GET['last_name'], $db_connect);
       $first_name = mysql_real_escape_string($_GET['first_name'], $db_connect);
-      $sex = mysql_real_escape_string($_GET['sex']), $db_connect);
+      $sex = mysql_real_escape_string($_GET['sex'], $db_connect);
       $birth_date = mysql_real_escape_string($_GET['birth_date'], $db_connect);
       $death_date = mysql_real_escape_string($_GET['death_date'], $db_connect);
 
-      // TODO: Handle missing field input
-      // if (empty($query)) {
-      //   echo "All fields are required. Please try again."
-      // }
-      // else
+      // Handle missing field input
+      if ( empty($person_type) 
+        || empty($last_name)
+        || empty($first_name)
+        || empty($sex)
+        || empty($birth_date)
+        || empty($death_date) 
+      ) {
+        echo "<div class=\"row\">
+                <div class=\"large-12 columns\">
+                  <p>
+                    All fields are required. Please try again.
+                  </p>
+                </div>
+              </div>";
+      }
+      else {
+        // Update the max ID for a new person
+        $id_update = "INSERT INTO MaxPersonID VALUES (id = (SELECT * FROM MaxPersonID) + 1);";
+        mysql_query($id_update, $db_connect);
+        echo "The result of the ID update: " . $id_update;
 
-      // Create SQL query of form INSERT INTO <table> VALUES (301, "Laro", ...)
-      $insert = "INSERT INTO " . $person_type 
-              . "VALUES" . "("
-              . $person_id . ","
-              . $last_name . ","
-              . $first_name . ","
-              . $sex . ","
-              . $birth_date . ","
-              . $death_date . 
-              . ")";
+        // Get person's ID
+        $id_query = "SELECT * FROM MaxPersonID;";
+        $person_id = mysql_query($id_query, $db_connect);
 
-      // Apply the query 
-      mysql_query($insert, $db_connect);
-     ?>
+        // Create SQL query of form INSERT INTO <table> VALUES (301, "Laro", ...)
+        $insert = "INSERT INTO %s VALUES(%s, %s, %s, %s, %s, %s);";
+        $insert = sprintf($insert, $person_type, $person_id, $last_name, $first_name, $sex, $birth_date, $death_date);
+        
+        echo "<div class=\"row\">
+                <div class=\"large-12 columns\">
+                  <p>Your query:</p>
+                  <pre>" .
+                    $insert
+                  .
+                  "</pre>
+                </div>
+              </div>";
 
-    <div class="container">
-      <h1>Add Director</h1>
+        mysql_query($insert, $db_connect);
+
+        echo "<div class=\"row\">
+                <div class=\"large-12 columns\">
+                  <p>
+                    Thanks!
+                  </p>
+                </div>
+              </div>";
+      }
+      ?>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <h1>Add Movie</h1>
         <form method="GET">
           <textarea name="director-name" cols="100" rows="1"></textarea>
           <br/>
+          <!-- Since '#' means we go to the current page, the GET request
+               URL parameters will be passed on from our filled-out forms -->
           <input type="submit" value="Submit">
         </form>
+      </div>
     </div>
 
     <!-- TODO: Movie info -->
@@ -126,7 +168,7 @@
 
     <!-- JavaScript -->
     <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/foundation.min.js"></script
   </body>
 </html>
 
