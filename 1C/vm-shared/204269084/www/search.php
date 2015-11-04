@@ -94,13 +94,15 @@
 
               // Logic for Search Engine of mini IMDB site!
               // For Movies:
-              //    Look up any movie where the title contains all the words in the search query
-              //
+              //    1) Look for a movie title in the EXACT wording of the query
+              //    2) Look for a movie title containing the exact wording of the query
+              //    3) Look for a movie title containing all the words in the query (but could be spread out, in a different order)
+              
               // For Actors/Actresses:
               //    1) If there is TWO words:
               //         a) Look for an exact first + last name pairing (either order)
               //         b) If nothing found, look for a first/last name pairing that starts with the query given
-              //   
+                
               //    2) If there's NOT TWO words (either 1, or >= 3):
               //         a) Pattern match for any first/last name that contains anything of what was queried 
               //         b) So if typing "Oprah" -- you would find "Oprah Winfrey"
