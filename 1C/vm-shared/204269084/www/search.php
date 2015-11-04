@@ -42,7 +42,7 @@
             <input type="reset" class="small secondary button" value="Reset">
           </form>  
           <?php 
-              function makeTable($tbl_results) {
+              function makeMovieTable($tbl_results) {
                 if (count($tbl_results) == 0) {
                   print "Nothing was found for this query.";
                 }
@@ -52,22 +52,44 @@
                 // find out how many columns there are
                 $field_num = mysql_num_fields($tbl_results);
 
-                // Create the first row - names
+                // Create the first row - name and DOB
                 print "<tr class='bold'>";
-                for ($j = 0; $j < $field_num; $j++) {
-                  $field_name = mysql_field_name($tbl_results, $j);
-                  print "<td>$field_name</td>";
-                }
+                print "<td>Title</td>";
+                print "<td>Year</td>";
                 print "</tr>";
 
                 while ($row = mysql_fetch_row($tbl_results)) {
                   print "<tr>";
-                  for ($i = 0; $i < $field_num; $i++) {
-                    $item = $row[$i];
-                    print "<td>$item</td>";
-                  }     
+                  print "<td><a href=\"./showMovie.php?mid=".$row[0]."\">".$row[1]."</a></td>";
+                  print "<td>".$row[2]."</td>";
                   print "</tr>";
                 }
+              }
+
+              function makeActorTable($tbl_results) {
+                if (count($tbl_results) == 0) {
+                  print "Nothing was found for this query.";
+                }
+                // print out results in a table
+                print "<table>";
+
+                // find out how many columns there are
+                $field_num = mysql_num_fields($tbl_results);
+
+                // Create the first row - name and DOB
+                print "<tr class='bold'>";
+                print "<td>Name</td>";
+                print "<td>Date of Birth</td>";
+                print "</tr>";
+
+
+                while ($row = mysql_fetch_row($tbl_results)) {
+                  print "<tr>";
+                  print "<td><a href=\"./showActor.php?aid=".$row[0]."\">".$row[2]." ".$row[1]."</a></td>";
+                  print "<td>".$row[4]."</td>";
+                  print "</tr>";
+                }
+
                 print "</table>";
               }
 
@@ -105,16 +127,19 @@
                 // Create MySQL Query
                 $title = "SELECT * FROM Movie AS M WHERE M.title=\"".$sanitized."\";";
 
-                print "CHECKING MOVIES...";
+                print "CHECKING MOVIES... ";
                 // SEND THE RESULT AS A QUERY TO THE DATABASE
                 $title_results = mysql_query($title, $db_connect);
 
                 if (mysql_num_rows($title_results) > 0) {
-                  makeTable($title_results);
+                  makeMovieTable($title_results);
                 } else {
-                  $statement = "SELECT * FROM Movie AS M WHERE M.title LIKE ".$and_words.";";
-                  $results = mysql_query($statement, $db_connect);                 
-                  makeTable($results);                  
+                  $statement = "SELECT * FROM Movie WHERE title LIKE ".$and_words.";";
+                  print $statement;
+                  $results = mysql_query($statement, $db_connect);  
+                  if (mysql_num_rows($results) > 0) {
+                    makeMovieTable($results);
+                  }     
                 }
 
                 // CHECKING ACTOR
@@ -125,19 +150,18 @@
                   $statement2 = "SELECT * FROM Actor AS A WHERE (A.first=\"".$separate_words[0]."\" AND "."A.last=\"".$separate_words[1]."\") OR (A.first=\"".$separate_words[1]."\" AND "."A.last=\"".$separate_words[0]."\");";
 
                   $results2 = mysql_query($statement2, $db_connect);                 
-                  makeTable($results2);
 
                   // If there was something found, then we end here
                   if(mysql_num_rows($results2) > 0) {
                     $found_query = true;
-                    makeTable($results2);                      
+                    makeActorTable($results2);                      
                   } else {
                     // Look for for pattern where (first LIKE "tom", last LIKE "hanks") or (first LIKE "hanks", last LIKE "tom")
                     $statement3 = "SELECT * FROM Actor AS A WHERE (A.first LIKE \"".$separate_words[0]."%\" AND "."A.last LIKE \"".$separate_words[1]."%\") OR (A.first LIKE \"".$separate_words[1]."%\" AND "."A.last LIKE \"".$separate_words[0]."%\");";      
                     $results3 = mysql_query($statement3, $db_connect);                 
                     if(mysql_num_rows($results3) > 0) {
                       $found_query = true;
-                      makeTable($results3);                        
+                      makeActorTable($results3);             
                     }
                   }
                 } 
@@ -145,8 +169,10 @@
                 // If the count is not two, try to find anything similar to the search query 
                 else if($found_query == false) {
                   $statement4 = "SELECT * FROM Actor AS A WHERE A.first LIKE ".$and_words." OR A.last LIKE".$and_words.";";
-                  $results3 = mysql_query($statement4, $db_connect);                 
-                  makeTable($results3);
+                  $results3 = mysql_query($statement4, $db_connect);                
+                  if(mysql_num_rows($results3) > 0) {
+                    makeActorTable($results3);
+                  }
                 }
               }             
             mysql_close($db_connect); 

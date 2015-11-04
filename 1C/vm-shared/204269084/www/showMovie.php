@@ -39,7 +39,7 @@
               function printMovieInfo($tbl_results) {
                 // Sanity check
                 if (mysql_num_rows($tbl_results) == 0) {
-                  print "This movie was not found in our database.";
+                  print "This movie was not found in our database for display.";
                 }
 
                 // find out how many columns there are
@@ -58,7 +58,7 @@
 
               function printDirectorInfo($tbl_results) {
                 if (mysql_num_rows($tbl_results) == 0) {
-                  print "No director was found in our database.";
+                  print "No director was found in our database.<br>";
                 } else {
                     // find out how many columns there are
                   $field_num = mysql_num_fields($tbl_results);
@@ -90,7 +90,7 @@
 
               function printActorInfo($tbl_results) {
                 if (mysql_num_rows($tbl_results) == 0) {
-                  print "No actors/actresses were found in our database.";
+                  print "No actors/actresses were found in our database.<br>";
                 } else {
                     // find out how many rows there are
                   $row_num = mysql_num_rows($tbl_results);
@@ -117,16 +117,28 @@
                   print $act_row[0]." || <i>".$act_row[1]."</i> || Rating: ".$act_row[3]."<br>Comment: ".$act_row[4]."<br><br>";
                 }
               }
-              
+
+              function printGenreInfo($tbl_results) {
+                if (mysql_num_rows($tbl_results) != 0) {
+                  $genre = mysql_fetch_row($tbl_results);
+                  print "Genre: ".$genre[1]."<br>";
+                } else {
+                  print "No genre was found in our database.<br>";
+                }
+              }              
 
               $mid = $_GET["mid"];  
               if (!empty($mid)) {
-                $movie_query = "SELECT * FROM Movie AS M, MovieGenre AS G WHERE M.id = ".$mid." AND G.mid = ".$mid.";";
+                $movie_query = "SELECT * FROM Movie WHERE id = ".$mid.";";
                 $mov_results = mysql_query($movie_query, $db_connect); 
 
                 if (mysql_num_rows($mov_results) == 0) {
-                  print "This movie was not found in our database.";
+                  print "This movie was not found in our database.<br>";
                 } else {
+                  //Not every movie has a genre.. so we have to do a left outer join or a separate query
+                  $movie_genre = "SELECT * FROM MovieGenre WHERE mid = ".$mid.";";
+                  $genre_results = mysql_query($movie_genre, $db_connect);
+
                   $director_query = "SELECT * FROM Director AS D WHERE D.id IN (SELECT did FROM MovieDirector WHERE mid = ".$mid.");";
                   $director_results = mysql_query($director_query, $db_connect);
 
@@ -135,6 +147,7 @@
 
                   printMovieInfo($mov_results); 
                   printDirectorInfo($director_results);
+                  printGenreInfo($genre_results);
                   printActorInfo($actor_results);
 
                   $user_query1 = "SELECT * FROM Review WHERE mid=".$mid.";";
@@ -158,91 +171,20 @@
           ?>
           <br>
 
-          <!-- Submit this to the "search page" -->
-          <p>Search for a Movie or Actor/Actress:</p>
-          <form method="GET">
-            <textarea name="query" cols="50" rows="1"></textarea>
-            <input type="submit" class="small submit button" value="Submit">
-            <input type="reset" class="small secondary button" value="Reset">
-          </form>  
-
-          <?php 
-              // Logic for Search Engine of mini IMDB site!
-              // For Movies:
-              //    Look up any movie where the title contains all the words in the search query
-              //
-              // For Actors/Actresses:
-              //    1) If there is TWO words:
-              //         a) Look for an exact first + last name pairing (either order)
-              //         b) If nothing found, look for a first/last name pairing that starts with the query given
-              //   
-              //    2) If there's NOT TWO words (either 1, or >= 3):
-              //         a) Pattern match for any first/last name that contains anything of what was queried 
-              //         b) So if typing "Oprah" -- you would find "Oprah Winfrey"
-              //         c) If typing "Win" -- you would find any value that has "Win" in the first or last name
-              //         d) If typing anything greater than 3, we'll look for any pattern that matches all three, although its most likely improbable.. more for movie titles     
-
-              // LINK BACK TO THE OTHER PAGE
-
-              // $query = $_GET["query"];  
-              // if (empty($query)) {
-              //     echo "";
-              // } else {
-              //   // if the input is not empty, query MySQL and get results
-              //   print "<h2>Results From MySQL</h2>";
-              //   $sanitized = mysql_real_escape_string($query, $db_connect);
-              //   // Separate search words like "Tom Hanks" ."%"to include AND
-              //   $separate_words = explode(" ", $sanitized);
-              //   $and_words = "\"%".$separate_words[0]."%\"";
-              //   $num_of_words = count($separate_words);
-              //   $found_query = false;
-
-              //   for ($k = 1; $k < $num_of_words; $k++) {
-              //       $and_words .= " AND "."\"%".$separate_words[$k]."%\"";
-              //   }
-
-              //   // Create MySQL Query
-              //   $statement = "SELECT * FROM Movie AS M WHERE M.title LIKE ".$and_words.";";
-
-              //   print "CHECKING MOVIES...";
-              //   // SEND THE RESULT AS A QUERY TO THE DATABASE
-              //   $results = mysql_query($statement, $db_connect);                 
-              //   makeTable($results);
-
-              //   // CHECKING ACTOR
-              //   print "<br>CHECKING ACTORS...";
-
-              //   // If there are two arguments for the query, then try first name, last name
-              //   if(count($separate_words) == 2) {
-              //     $statement2 = "SELECT * FROM Actor AS A WHERE (A.first=\"".$separate_words[0]."\" AND "."A.last=\"".$separate_words[1]."\") OR (A.first=\"".$separate_words[1]."\" AND "."A.last=\"".$separate_words[0]."\");";
-
-              //     $results2 = mysql_query($statement2, $db_connect);                 
-              //     makeTable($results2);
-
-              //     // If there was something found, then we end here
-              //     if(mysql_num_rows($results2) > 0) {
-              //       $found_query = true;
-              //       makeTable($results2);                      
-              //     } else {
-              //       // Look for for pattern where (first LIKE "tom", last LIKE "hanks") or (first LIKE "hanks", last LIKE "tom")
-              //       $statement3 = "SELECT * FROM Actor AS A WHERE (A.first LIKE \"".$separate_words[0]."%\" AND "."A.last LIKE \"".$separate_words[1]."%\") OR (A.first LIKE \"".$separate_words[1]."%\" AND "."A.last LIKE \"".$separate_words[0]."%\");";      
-              //       $results3 = mysql_query($statement3, $db_connect);                 
-              //       if(mysql_num_rows($results3) > 0) {
-              //         $found_query = true;
-              //         makeTable($results3);                        
-              //       }
-              //     }
-              //   } 
-
-              //   // If the count is not two, try to find anything similar to the search query 
-              //   else if($found_query == false) {
-              //     $statement4 = "SELECT * FROM Actor AS A WHERE A.first LIKE ".$and_words." OR A.last LIKE".$and_words.";";
-              //     $results3 = mysql_query($statement4, $db_connect);                 
-              //     makeTable($results3);
-              //   }
-              // }             
+          <?php
+            if (isset($_POST["searchButton"])) {
+              header ( "Location: ./search.php?query=".$_POST["query"] );
+              exit;
+            }
           ?>
 
+          <!-- Submit this to the "search page" -->
+          <p>Search for a Movie or Actor/Actress:</p>
+          <form method="POST">
+            <textarea name="query" cols="50" rows="1"></textarea>
+            <input type="submit" class="small submit button" value="Submit" id ="searchButton" name="searchButton">
+            <input type="reset" class="small secondary button" value="Reset">
+          </form>  
     </div>
     
     <!-- Never forget to close an opened resource -->
