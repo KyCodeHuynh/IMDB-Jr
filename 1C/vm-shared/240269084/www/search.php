@@ -127,12 +127,19 @@
                 }
 
                 // Create MySQL Query
-                $statement = "SELECT * FROM Movie AS M WHERE M.title LIKE ".$and_words.";";
+                $title = "SELECT * FROM Movie AS M WHERE M.title=\"".$sanitized."\";";
 
                 print "CHECKING MOVIES...";
                 // SEND THE RESULT AS A QUERY TO THE DATABASE
-                $results = mysql_query($statement, $db_connect);                 
-                makeTable($results);
+                $title_results = mysql_query($title, $db_connect);
+
+                if (mysql_num_rows($title_results) > 0) {
+                  makeTable($title_results);
+                } else {
+                  $statement = "SELECT * FROM Movie AS M WHERE M.title LIKE ".$and_words.";";
+                  $results = mysql_query($statement, $db_connect);                 
+                  makeTable($results);                  
+                }
 
                 // CHECKING ACTOR
                 print "<br>CHECKING ACTORS...";
