@@ -34,6 +34,26 @@
           <h1><a href="./addActor2Movie.php">Associate an Actor with a Movie</a></h1>
       </div>
 
+      <div class="row">
+        <form method="GET">
+          <fieldset>
+          <legend>Acting Credits</legend>
+
+            <label>Movie Title</label>
+            <input type="text" name="title" autocomplete="off">
+
+            <label>Actor's First Name</label>
+            <input type="text" name="first_name" autocomplete="off">
+
+            <label>Actor's Last Name</label>
+            <input type="text" name="last_name" autocomplete="off">
+
+            <input type="submit" class="small submit button" value="Submit">
+            <input type="reset" class="small secondary button" value="Reset">
+          </fieldset>
+        </form>
+      </div>
+
       <!-- Never forget to close an opened resource -->
       <?php 
         mysql_close($db_connect);

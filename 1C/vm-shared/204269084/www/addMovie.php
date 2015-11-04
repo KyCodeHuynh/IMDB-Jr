@@ -67,7 +67,6 @@
           <input type="reset" class="small secondary button" value="Reset">
         </fieldset>
       </form>
-      
     </div>
 
     <?php 

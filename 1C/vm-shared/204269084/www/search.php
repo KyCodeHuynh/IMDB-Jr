@@ -31,14 +31,15 @@
 
   <body>
     <div class="row">
-      <h1>Search</h1>
+      <h1><a href="./search.php">Search</a></h1>
       <div class="large-12 columns">
         <div>
           <p>Search for an actor or movie in our database</p>    
           <form method="GET">
             <textarea name="query" cols="50" rows="6"></textarea>
             <br>
-            <input type="submit" value="Submit">
+            <input type="submit" class="small submit button" value="Submit">
+            <input type="reset" class="small secondary button" value="Reset">
           </form>  
           <?php 
               function makeTable($tbl_results) {
