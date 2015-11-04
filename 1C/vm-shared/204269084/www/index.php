@@ -39,6 +39,7 @@
         <ul>
           <li><a href="search.php">Search</a></li>
           <li><a href="showMovie.php">Show Movies</a></li>
+          <li><a href="showActor.php">Show Actors</a></li>
           <li><a href="addPerson.php">Add an Actor or Director</a></li>
           <li><a href="addMovie.php">Add a Movie</a></li>
           <li><a href="addComments.php">Add Comments About a Movie</a></li>

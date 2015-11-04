@@ -57,12 +57,14 @@
             </span>
             <!-- Actor or director? -->
             <br>
+            <label>Actor or Director?</label>
             <span>
               <input type="radio" name="person_type" value="Actor" autocomplete="off"><label>Actor</label>
               <input type="radio" name="person_type" value="Director" autocomplete="off" checked><label>Director</label>
             </span>
             <!-- Female or male? -->
             <br>
+            <label>Sex</label>
             <span>
               <input type="radio" name="sex" value="female" autocomplete="off" checked><label>Female</label>
               <input type="radio" name="sex" value="male" autocomplete="off"><label>Male</label>
@@ -138,14 +140,14 @@
         if ($person_type == "Actor") {
           // Create SQL query of form INSERT INTO <table> VALUES (301, "Laro", ...)
           $insert = "INSERT INTO Actor (id, last, first, sex, dob, dod) 
-            VALUES (%s, '%s', '%s', '%s', CAST('%s' AS DATE), (CAST '%s' AS DATE));";
+            VALUES (%s, '%s', '%s', '%s', '%s', '%s');";
           $insert = sprintf($insert, $person_id, $last_name, $first_name, $sex, $birth_date, $death_date);
         }
         else {
           // Director has a slightly different schema
           // TODO: Director insert is not working for some reason
           $insert = "INSERT INTO Director (id, last, first, dob, dod) 
-            VALUES (%s, '%s', '%s', (CAST '%s' AS DATE), (CAST '%s' AS DATE));";
+            VALUES (%s, '%s', '%s', '%s', '%s');";
           $insert = sprintf($insert, $person_id, $last_name, $first_name, $birth_date, $death_date);
         }
         
