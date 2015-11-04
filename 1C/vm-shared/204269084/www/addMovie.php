@@ -101,8 +101,10 @@
 
         // Set-up SQL query 
         $insert = "INSERT INTO Movie (id, title, year, rating, company)
-          VALUES (%s, '%s', (CAST '%s' AS DATE), '%s', '%s')";
+          VALUES (%s, '%s', (CAST '%s' AS DATE), '%s', '%s');";
         $insert = sprintf($insert, $movie_id, $title, $year, $rating, $company);
+
+        print $insert;
 
         // TODO: This insert is failing. 
         mysql_query($insert, $db_connect);
