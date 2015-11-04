@@ -26,7 +26,7 @@
       // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
-      mysql_select_db("TEST", $db_connect)
+      mysql_select_db("CS143", $db_connect)
      ?>
   </head>
 
@@ -103,6 +103,8 @@
         $insert = "INSERT INTO Movie (id, title, year, rating, company)
           VALUES (%s, '%s', '%s', '%s', '%s');";
         $insert = sprintf($insert, $movie_id, $title, $year, $rating, $company);
+
+        print $insert;
 
         // TODO: Debugging only
         echo "<div class=\"row\">
