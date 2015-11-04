@@ -3,7 +3,7 @@
 <html>
   <!-- HEAD -->
   <head>
-    <title>Contribute to IMDB Jr.</title>
+    <title>Add an Actor or Director</title>
 
     <!-- Use UTF-8, and responsively match screen width 
          Add "user-scalable=0" if want to disable user zoom, 
@@ -34,7 +34,7 @@
   <!-- BODY -->
   <body>
     <div class="row">
-      <h1><a href=".">Add Person</a></h1>
+      <h1><a href="./addPerson.php">Add an Actor or Director</a></h1>
       <div class="large-12 columns">
         <form method="GET">
           <!-- Fieldset just groups together related form data -->
@@ -59,18 +59,18 @@
             <br>
             <span>
               <input type="radio" name="person_type" value="Actor" autocomplete="off"><label>Actor</label>
-              <input type="radio" name="person_type" value="Director" autocomplete="off"><label>Director</label>
+              <input type="radio" name="person_type" value="Director" autocomplete="off" checked><label>Director</label>
             </span>
             <!-- Female or male? -->
             <br>
             <span>
-              <input type="radio" name="sex" value="female" autocomplete="off"><label>Female</label>
+              <input type="radio" name="sex" value="female" autocomplete="off" checked><label>Female</label>
               <input type="radio" name="sex" value="male" autocomplete="off"><label>Male</label>
             </span>
             <br>
             <!-- TODO: Get a nicer submit button -->
-            <input type="submit" value="Submit">
-            <input type="reset" value="Reset">  
+            <input type="submit" class="small submit button" value="Submit">
+            <input type="reset" class="small secondary button" value="Reset">  
           </fieldset>
         </form>
       </div>
@@ -78,9 +78,9 @@
 
     <?php 
       // Show errors in PHP
-      ini_set('display_errors', 1);
-      ini_set('display_startup_errors', 1);
-      error_reporting(E_ALL);
+      // ini_set('display_errors', 1);
+      // ini_set('display_startup_errors', 1);
+      // error_reporting(E_ALL);
 
       // Having a link identifier lets MySQL determine the character set to use
       // See: http://bit.ly/1isaeWS
@@ -107,7 +107,6 @@
               </div>";
       }
       else {
-        // TODO: Fix getting and updating the person's ID
         // Update the max ID for a new person
         $id_update = "UPDATE MaxPersonID SET id=id+1";
         mysql_query($id_update, $db_connect);
@@ -172,8 +171,6 @@
               </div>";
       }
       ?>
-
-   
 
     <!-- Never forget to close an opened resource -->
     <?php 

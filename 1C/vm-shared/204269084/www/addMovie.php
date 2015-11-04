@@ -49,7 +49,7 @@
           <!-- TODO: Use this date type across other pages too?
           It automatically enforces valid numbers for months and days -->
           <label>Year of Release</label>
-          <input type="date" name="year" autocomplete="off">
+          <input type="text" name="year" placeholder="YYYY-MM-DD" autocomplete="off">
 
           <label>MPAA Rating</label>
           <select name="rating">
@@ -61,7 +61,7 @@
           </select>
 
           <label>Production Company</label>
-          <input type="text" name="company" placeholder="20th Century Fox">
+          <input type="text" name="company">
 
           <input type="submit" class="small submit button" value="Submit">
           <input type="reset" class="small secondary button" value="Reset">
@@ -71,15 +71,51 @@
     </div>
 
     <?php 
-      $test = $_GET['year'];
-      print $test;
-     ?>
+      // Grab field values
+      $title = mysql_real_escape_string($_GET['title']);
+      $year = mysql_real_escape_string($_GET['year']);
+      $rating = mysql_real_escape_string($_GET['rating']);
+      $company = mysql_real_escape_string($_GET['company']);
 
-    <!-- TODO: Movie info -->
-    <!-- TODO: Movie comments -->
-    <!-- TODO: Movie reviews require a TIMESTAMP -->
-    <!-- TODO: Actor to movie relation -->
-    <!-- TODO: Director to movie relation -->
+      if ( empty($title) 
+        || empty($year)
+        || empty($rating)
+        || empty($company)
+      ) {
+        echo "<div class=\"row\">
+                <div class=\"large-12 columns\">
+                  <p>
+                    All fields are required.
+                  </p>
+                </div>
+              </div>";
+      }
+      else {
+        // Update the max ID for a new movie
+        $id_update = "UPDATE MaxMovieID SET id=id+1";
+        mysql_query($id_update, $db_connect);
+
+        // Get person's ID
+        $id_query = "SELECT * FROM MaxMovieID;";
+        $result = mysql_query($id_query, $db_connect);
+        $movie_id = mysql_fetch_row($result)[0];
+
+        // Set-up SQL query 
+        $insert = "INSERT INTO Movie (id, title, year, rating, company)
+          VALUES (%s, '%s', (CAST '%s' AS DATE), '%s', '%s')";
+        $insert = sprintf($insert, $movie_id, $title, $year, $rating, $company);
+
+        // TODO: This insert is failing. 
+        mysql_query($insert, $db_connect);
+        echo "<div class=\"row\">
+              <div class=\"large-12 columns\">
+                <p>
+                  Thanks!
+                </p>
+              </div>
+            </div>";
+      }
+     ?>
 
     <!-- Never forget to close an opened resource -->
     <?php 

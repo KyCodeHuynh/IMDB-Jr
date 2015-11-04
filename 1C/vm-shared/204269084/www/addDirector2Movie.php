@@ -1,7 +1,7 @@
 <!DOCTYPE htmL> 
 <html>
   <head>
-    <title>IMDB Jr.</title>
+    <title>Associate a Director with a Movie</title>
 
     <!-- Use UTF-8, and responsively match screen width 
          Add "user-scalable=0" if want to disable user zoom, 
@@ -31,7 +31,7 @@
 
   <body>
       <div class="row">
-          <h1>Welcome to IMDB Jr.!</h1>
+          <h1><a href="./addDirector2Movie.php">Associate a Director with a Movie</a></h1>
       </div>
 
       <!-- Never forget to close an opened resource -->
