@@ -10,8 +10,8 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.00"/>
 
     <!-- CSS stylesheets -->
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="./css/styles.css"
+    <link rel="stylesheet" type="text/css" href="css/foundation.min.css">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
 
     <!-- Database set-up -->
     <?php
@@ -27,37 +27,12 @@
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect);
      ?>
-      <style type="text/css">
-        .centered {
-            text-align: left;
-            border: 0px;
-            padding: 0;
-            margin-left: auto;
-            margin-right: auto;
-            display: table;
-        }
-
-        #example {
-          font-style: italic;
-        }
-
-        table, th, td {
-          text-align: center;
-          border: 1px solid black;
-          border-spacing: 1;
-          padding: 2;
-        }
-
-        .bold {
-          font-weight: bold;
-        }
-    </style>
   </head>
 
   <body>
-    <div class="container theme-showcase">
-      <div class="jumbotron">
-          <h1>Movie Profile</h1>
+    <div class="row">
+      <div class="large-12 columns">
+          <h1><a href="./showMovie.php">Movie Profile</a></h1>
       </div>  
           <?php 
               // Prints out movie info from the table
@@ -185,9 +160,9 @@
           <!-- Submit this to the "search page" -->
           <p>Search for a Movie or Actor/Actress:</p>
           <form method="GET">
-          <textarea name="query" cols="50" rows="1"></textarea>
-          <br>
-          <input type="submit" value="Submit">
+            <textarea name="query" cols="50" rows="1"></textarea>
+            <input type="submit" class="small submit button" value="Submit">
+            <input type="reset" class="small secondary button" value="Reset">
           </form>  
 
           <?php 
@@ -275,8 +250,8 @@
      ?>
 
     <!-- JavaScript -->
-    <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/foundation.min.js"></script
   </body>
 </html>
 
