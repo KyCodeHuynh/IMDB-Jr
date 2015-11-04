@@ -114,12 +114,29 @@
               }
 
               function printGenreInfo($tbl_results) {
-                if (mysql_num_rows($tbl_results) != 0) {
-                  $genre = mysql_fetch_row($tbl_results);
-                  print "Genre: ".$genre[1]."<br>";
-                } else {
+                if (mysql_num_rows($tbl_results) == 0) {
                   print "No genre was found in our database.<br>";
+                } else {
+                    // find out how many columns there are
+                  $field_num = mysql_num_fields($tbl_results);
+                  $row_num = mysql_num_rows($tbl_results);
+                  print "Genre: ";
+
+                  // Changed to for loop to keep track of how many directors there are
+                  for ($i = 0; $i < $row_num; $i++) {
+                    // Starts at j=1 to ignore the first mid
+                    $gen_row = mysql_fetch_row($tbl_results);
+                    print $gen_row[1];
+
+                    if (($i+1) < $row_num) {
+                      print ", ";
+                    }
+                  }
+                  print "<br>";
                 }
+
+
+
               }              
 
               $mid = $_GET["mid"];  

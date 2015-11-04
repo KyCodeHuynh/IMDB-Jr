@@ -47,7 +47,7 @@
 
           <!-- It automatically enforces valid numbers for months and days -->
           <label>Year of Release</label>
-          <input type="text" name="year" placeholder="YYYY-MM-DD" autocomplete="off">
+          <input type="text" name="year" placeholder="YYYY" autocomplete="off">
 
           <label>MPAA Rating</label>
           <select name="rating">
@@ -61,6 +61,28 @@
           <label>Production Company</label>
           <input type="text" name="company">
 
+          <label>Genre</label>
+          <input type="checkbox" name="genre[]" value="Action"> Action
+          <input type="checkbox" name="genre[]" value="Adult"> Adult
+          <input type="checkbox" name="genre[]" value="Adventure"> Adventure
+          <input type="checkbox" name="genre[]" value="Animation"> Animation
+          <input type="checkbox" name="genre[]" value="Comedy"> Comedy
+          <input type="checkbox" name="genre[]" value="Crime"> Crime
+          <input type="checkbox" name="genre[]" value="Documentary"> Documentary
+          <input type="checkbox" name="genre[]" value="Drama"> Drama
+          <input type="checkbox" name="genre[]" value="Family"> Family
+          <input type="checkbox" name="genre[]" value="Fantasy"> Fantasy
+          <input type="checkbox" name="genre[]" value="Horror"> Horror
+          <input type="checkbox" name="genre[]" value="Musical"> Musical
+          <input type="checkbox" name="genre[]" value="Mystery"> Mystery
+          <input type="checkbox" name="genre[]" value="Romance"> Romance
+          <input type="checkbox" name="genre[]" value="Sci-Fi"> Sci-Fi
+          <input type="checkbox" name="genre[]" value="Short"> Short
+          <input type="checkbox" name="genre[]" value="Thriller"> Thriller
+          <input type="checkbox" name="genre[]" value="War"> War     
+          <input type="checkbox" name="genre[]" value="Western"> Western
+          <br>
+
           <input type="submit" class="small submit button" value="Submit">
           <input type="reset" class="small secondary button" value="Reset">
         </fieldset>
@@ -73,6 +95,7 @@
       $year = mysql_real_escape_string($_GET['year']);
       $rating = mysql_real_escape_string($_GET['rating']);
       $company = mysql_real_escape_string($_GET['company']);
+      $genre = $_GET['genre'];
 
       if ( empty($title) 
         || empty($year)
@@ -102,6 +125,15 @@
           VALUES (%s, '%s', '%s', '%s', '%s');";
         $insert = sprintf($insert, $movie_id, $title, $year, $rating, $company);
 
+        mysql_query($insert, $db_connect);
+
+        // Insert into Movie Genre as well
+        foreach($genre as $gen_select) {
+          $genre_insert = "INSERT INTO MovieGenre (mid, genre) VALUES (%s, '%s');";
+          $genre_insert = sprintf($genre_insert, $movie_id, $gen_select);
+          mysql_query($genre_insert, $db_connect); 
+        }
+
         // Debugging only
         // echo "<div class=\"row\">
         //       <div class=\"large-12 columns\">
@@ -114,8 +146,6 @@
         //         </p>
         //       </div>
         //     </div>";
-
-        mysql_query($insert, $db_connect);
 
         echo "<div class=\"row\">
               <div class=\"large-12 columns\">
