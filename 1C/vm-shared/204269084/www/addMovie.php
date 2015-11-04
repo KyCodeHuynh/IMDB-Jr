@@ -54,10 +54,10 @@
           <label>MPAA Rating</label>
           <select name="rating">
             <option value="G">G</option>
-            <option value="G">PG</option>
-            <option value="G">PG-13</option>
-            <option value="G">R</option>
-            <option value="G">UR</option>
+            <option value="PG">PG</option>
+            <option value="PG-13">PG-13</option>
+            <option value="R">R</option>
+            <option value="UR">UR</option>
           </select>
 
           <label>Production Company</label>
@@ -91,7 +91,7 @@
       }
       else {
         // Update the max ID for a new movie
-        $id_update = "UPDATE MaxMovieID SET id=id+1";
+        $id_update = "UPDATE MaxMovieID SET id=id+1;";
         mysql_query($id_update, $db_connect);
 
         // Get person's ID
@@ -101,8 +101,20 @@
 
         // Set-up SQL query 
         $insert = "INSERT INTO Movie (id, title, year, rating, company)
-          VALUES (%s, '%s', (CAST '%s' AS DATE), '%s', '%s')";
+          VALUES (%s, '%s', '%s', '%s', '%s');";
         $insert = sprintf($insert, $movie_id, $title, $year, $rating, $company);
+
+        echo "<div class=\"row\">
+              <div class=\"large-12 columns\">
+                <p>
+                  Your ID update result was: 
+                  <pre>" .
+                      $movie_id
+                  .
+                    "</pre>
+                </p>
+              </div>
+            </div>";
 
         // TODO: This insert is failing. 
         mysql_query($insert, $db_connect);
