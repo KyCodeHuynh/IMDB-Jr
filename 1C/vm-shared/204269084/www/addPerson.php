@@ -27,7 +27,7 @@
       // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
-      mysql_select_db("TEST", $db_connect)
+      mysql_select_db("CS143", $db_connect)
      ?>
   </head>
 

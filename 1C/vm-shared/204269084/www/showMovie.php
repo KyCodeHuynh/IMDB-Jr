@@ -100,8 +100,8 @@
                   // I hard-coded the numbers for the display
                   // (Ideally we would want to use variables if we changed the order)
                   for($i = 0; $i < $row_num; $i++) {
-                    $act_row = mysql_fetch_row($tbl_results);
-                    print $act_row[0]." ".$act_row[1]." as ".$act_row[2]."<br>" ;
+                    $act_row = mysql_fetch_row($tbl_results);                   
+                    print "<a href=\"./showActor.php?aid=".$act_row[3]."\">".$act_row[0]." ".$act_row[1]."</a> as ".$act_row[2]."<br>" ;
                   }
                 }
               }
@@ -120,9 +120,7 @@
               
 
               $mid = $_GET["mid"];  
-              if (empty($mid)) {
-                echo "The movie you are searching for is now unavailable.";
-              } else {
+              if (!empty($mid)) {
                 $movie_query = "SELECT * FROM Movie AS M, MovieGenre AS G WHERE M.id = ".$mid." AND G.mid = ".$mid.";";
                 $mov_results = mysql_query($movie_query, $db_connect); 
 
@@ -132,7 +130,7 @@
                   $director_query = "SELECT * FROM Director AS D WHERE D.id IN (SELECT did FROM MovieDirector WHERE mid = ".$mid.");";
                   $director_results = mysql_query($director_query, $db_connect);
 
-                  $actor_query = "SELECT Act.first, Act.last, Mov.role, Mov.mid FROM MovieActor AS Mov, Actor AS Act WHERE Mov.mid = ".$mid." AND Act.id = Mov.aid;";
+                  $actor_query = "SELECT Act.first, Act.last, Mov.role, Act.id FROM MovieActor AS Mov, Actor AS Act WHERE Mov.mid = ".$mid." AND Act.id = Mov.aid;";
                   $actor_results = mysql_query($actor_query, $db_connect);                  
 
                   printMovieInfo($mov_results); 
@@ -144,12 +142,15 @@
                   $user_results = mysql_query($user_query1, $db_connect);   
                   $user_average = mysql_query($user_query2, $db_connect); 
                   $row_num = mysql_num_rows($user_results);
+                  print "<br>";
+                  print "<h3>User Reviews</h3>";
                   if ($row_num != 0) {
                     $avg = mysql_fetch_row($user_average);
-                    print "<h3>User Reviews || Average Rating (out of ".$row_num." reviews): ".$avg[0]."</h3>";
+                    print "<h5>Average Rating (out of ".$row_num." reviews): ".$avg[0]."</h5>";
                     printCommentInfo($user_results, $row_num);
                   } else {
-                    print "There are no user reviews for this movie. <Add your review here!>";  
+                    print "There are no user reviews for this movie. <br>";
+                    print "<a href=\"./addComments.php?\">Add your review here!</a><br>";  
                   }
 
                 }
