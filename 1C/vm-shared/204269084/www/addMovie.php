@@ -2,7 +2,7 @@
 <html>
   <!-- HEAD -->
   <head>
-    <title>Contribute to IMDB Jr.</title>
+    <title>Add a Movie</title>
 
     <!-- Use UTF-8, and responsively match screen width 
          Add "user-scalable=0" if want to disable user zoom, 
@@ -34,16 +34,46 @@
   <body>
     <div class="row">
       <div class="large-12 columns">
-        <h1>Add Movie</h1>
-        <form method="GET">
-          <textarea name="director-name" cols="100" rows="1"></textarea>
-          <br/>
-          <!-- Since '#' means we go to the current page, the GET request
-               URL parameters will be passed on from our filled-out forms -->
-          <input type="submit" value="Submit">
-        </form>
+        <h1><a href="./addMovie.php">Add a Movie</a></h1>
       </div>
     </div>
+
+    <div class="row">
+      <form method="GET">
+        <fieldset>
+        <legend>Movie Information</legend>
+
+          <label>Movie Title</label>
+          <input type="text" name="title" autocomplete="off">
+
+          <!-- TODO: Use this date type across other pages too?
+          It automatically enforces valid numbers for months and days -->
+          <label>Year of Release</label>
+          <input type="date" name="year" autocomplete="off">
+
+          <label>MPAA Rating</label>
+          <select name="rating">
+            <option value="G">G</option>
+            <option value="G">PG</option>
+            <option value="G">PG-13</option>
+            <option value="G">R</option>
+            <option value="G">UR</option>
+          </select>
+
+          <label>Production Company</label>
+          <input type="text" name="company" placeholder="20th Century Fox">
+
+          <input type="submit" class="small submit button" value="Submit">
+          <input type="reset" class="small secondary button" value="Reset">
+        </fieldset>
+      </form>
+      
+    </div>
+
+    <?php 
+      $test = $_GET['year'];
+      print $test;
+     ?>
 
     <!-- TODO: Movie info -->
     <!-- TODO: Movie comments -->
