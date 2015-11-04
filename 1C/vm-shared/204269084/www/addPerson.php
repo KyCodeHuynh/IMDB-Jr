@@ -24,7 +24,6 @@
         die("Connection failed: " . $db_connect->connect_error);
       }
 
-      // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect)
@@ -70,7 +69,6 @@
               <input type="radio" name="sex" value="male" autocomplete="off"><label>Male</label>
             </span>
             <br>
-            <!-- TODO: Get a nicer submit button -->
             <input type="submit" class="small submit button" value="Submit">
             <input type="reset" class="small secondary button" value="Reset">  
           </fieldset>
@@ -118,24 +116,24 @@
         $result = mysql_query($id_query, $db_connect);
         $person_id = mysql_fetch_row($result)[0];
 
-        // TODO: Debugging only
-        echo "<div class=\"row\">
-                <div class=\"large-12 columns\">
-                  <br>
-                  <p>The attempted ID update:</p>
-                  <pre>" .
-                    $id_update
-                  .
-                  "</pre>
+        // Debugging only
+        // echo "<div class=\"row\">
+        //         <div class=\"large-12 columns\">
+        //           <br>
+        //           <p>The attempted ID update:</p>
+        //           <pre>" .
+        //             $id_update
+        //           .
+        //           "</pre>
 
-                  <br>
-                  <p>The returned ID:</p>
-                  <pre>" .
-                    $person_id
-                  .
-                  "</pre>
-                </div>
-              </div>";
+        //           <br>
+        //           <p>The returned ID:</p>
+        //           <pre>" .
+        //             $person_id
+        //           .
+        //           "</pre>
+        //         </div>
+        //       </div>";
 
         if ($person_type == "Actor") {
           // Create SQL query of form INSERT INTO <table> VALUES (301, "Laro", ...)
@@ -156,7 +154,6 @@
         }
         else {
           // Director has a slightly different schema
-          // TODO: Director insert is not working for some reason
           
           if ($death_date != "NULL") {
             $insert = "INSERT INTO Director (id, last, first, dob, dod) 
@@ -170,16 +167,17 @@
           }
         }
         
-        echo "<div class=\"row\">
-                <div class=\"large-12 columns\">
-                  <br>
-                  <p>Your query:</p>
-                  <pre>" .
-                    $insert
-                  .
-                  "</pre>
-                </div>
-              </div>";
+        // Debugging only
+        // echo "<div class=\"row\">
+        //         <div class=\"large-12 columns\">
+        //           <br>
+        //           <p>Your query:</p>
+        //           <pre>" .
+        //             $insert
+        //           .
+        //           "</pre>
+        //         </div>
+        //       </div>";
 
         mysql_query($insert, $db_connect);
 

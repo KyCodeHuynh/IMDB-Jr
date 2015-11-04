@@ -104,6 +104,7 @@
           VALUES (%s, '%s', '%s', '%s', '%s');";
         $insert = sprintf($insert, $movie_id, $title, $year, $rating, $company);
 
+        // TODO: Debugging only
         echo "<div class=\"row\">
               <div class=\"large-12 columns\">
                 <p>
@@ -118,6 +119,7 @@
 
         // TODO: This insert is failing. 
         mysql_query($insert, $db_connect);
+
         echo "<div class=\"row\">
               <div class=\"large-12 columns\">
                 <p>
