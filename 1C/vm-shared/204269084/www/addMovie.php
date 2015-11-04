@@ -23,7 +23,6 @@
         die("Connection failed: " . $db_connect->connect_error);
       }
 
-      // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect)
@@ -106,20 +105,19 @@
 
         print $insert;
 
-        // TODO: Debugging only
-        echo "<div class=\"row\">
-              <div class=\"large-12 columns\">
-                <p>
-                  Your ID update result was: 
-                  <pre>" .
-                      $movie_id
-                  .
-                    "</pre>
-                </p>
-              </div>
-            </div>";
+        // Debugging only
+        // echo "<div class=\"row\">
+        //       <div class=\"large-12 columns\">
+        //         <p>
+        //           Your ID update result was: 
+        //           <pre>" .
+        //               $movie_id
+        //           .
+        //             "</pre>
+        //         </p>
+        //       </div>
+        //     </div>";
 
-        // TODO: This insert is failing. 
         mysql_query($insert, $db_connect);
 
         echo "<div class=\"row\">
