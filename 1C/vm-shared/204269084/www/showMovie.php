@@ -22,7 +22,6 @@
         die("Connection failed: " . $db_connect->connect_error);
       }
 
-      // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect);
@@ -81,12 +80,9 @@
                       print ", ";
                     }
                   }
+                  print "<br>";
                 }
               }
-
-              // TODO: PRINT OUT <a href> so that we can have the actors have links to their profiles.. 
-              // CAN'T fully do it until "show Actors" page is created
-              // Also --- the mid is part of the table so you can reference it with act_row[3]
 
               function printActorInfo($tbl_results) {
                 if (mysql_num_rows($tbl_results) == 0) {
@@ -107,14 +103,13 @@
               }
 
               function printCommentInfo($tbl_results, $row_num) {
-                print "<b>Comments</b><br><br>";
                 // Since we customized our table to have "first name, last name, role, mid"
                 // I hard-coded the numbers for the display
                 // (Ideally we would want to use variables if we changed the order)
                 for($i = 0; $i < $row_num; $i++) {
                   $act_row = mysql_fetch_row($tbl_results);
                   // We want to have the name first, then their time stamp under, then their comment
-                  print $act_row[0]." || <i>".$act_row[1]."</i> || Rating: ".$act_row[3]."<br>Comment: ".$act_row[4]."<br><br>";
+                  print $act_row[0]." || ".$act_row[1]." || Rating: ".$act_row[3]."<br>Comment: ".$act_row[4]."<br><br>";
                 }
               }
 
@@ -163,9 +158,8 @@
                     printCommentInfo($user_results, $row_num);
                   } else {
                     print "There are no user reviews for this movie. <br>";
-                    print "<a href=\"./addComments.php?\">Add your review here!</a><br>";  
                   }
-
+                  print "<a href=\"./addComments.php?\">Add your review here!</a><br>";  
                 }
               }
           ?>

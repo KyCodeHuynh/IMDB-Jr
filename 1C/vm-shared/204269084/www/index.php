@@ -22,7 +22,6 @@
         die("Connection failed: " . $db_connect->connect_error);
       }
 
-      // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect)
@@ -38,33 +37,19 @@
         <!-- TODO: Introduce a snazzy navbar! -->
         <ul>
           <li><a href="search.php">Search</a></li>
-          <li><a href="showMovie.php">Show Movies</a></li>
-          <li><a href="showActor.php">Show Actors</a></li>
+          <li><a href="showMovie.php?mid=3641">Show Movies</a></li>
+          <li><a href="showActor.php?aid=3035">Show Actors</a></li>
           <li><a href="addPerson.php">Add an Actor or Director</a></li>
           <li><a href="addMovie.php">Add a Movie</a></li>
           <li><a href="addComments.php">Add Comments About a Movie</a></li>
           <li><a href="addDirector2Movie.php">Associate a Director with a Movie</a></li>
-          <li><a href="addActor2movie.php">Associate an Actor with a Movie</a></li>
+          <li><a href="addActor2Movie.php">Associate an Actor with a Movie</a></li>
         </ul>
 
-        <!-- TODO: replace with copy text -->
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui
-          fugiat dolorem quo, quas, natus corporis nulla, officiis voluptas
-          totam dolorum iste consequatur magnam officia ea. Iure sequi
-          consectetur quis inventore! Lorem ipsum dolor sit amet, consectetur
-          adipisicing elit. Sit nisi modi optio, tempore similique officia,
-          nostrum expedita id praesentium laboriosam eius, facilis quidem.
-          Doloremque quibusdam mollitia sapiente qui? Tempore, voluptatem.
-          </p>
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui
-          fugiat dolorem quo, quas, natus corporis nulla, officiis voluptas
-          totam dolorum iste consequatur magnam officia ea. Iure sequi
-          consectetur quis inventore! Lorem ipsum dolor sit amet, consectetur
-          adipisicing elit. Sit nisi modi optio, tempore similique officia,
-          nostrum expedita id praesentium laboriosam eius, facilis quidem.
-          Doloremque quibusdam mollitia sapiente qui? Tempore, voluptatem.
-          </p>
+        <p>Welcome to our Internet Movie Database! <br>
+          Feel free to look around at some of your favorite films and actors! <br> 
+          Who knows, maybe you'll be surprised by what you find...
+        </p>
 
         <h2>Our Favorite Upcoming Movie</h2>
         <p>

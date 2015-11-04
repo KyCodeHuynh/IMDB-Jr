@@ -22,7 +22,6 @@
         die("Connection failed: " . $db_connect->connect_error);
       }
 
-      // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect)
@@ -43,12 +42,12 @@
             <input type="text" name="title" autocomplete="off">
 
             <label>Movie Rating</label>
-            <select>
+            <select name='rating'>
               <option value="1">1 star</option>
-              <option value="1">2 stars</option>
-              <option value="1">3 stars</option>
-              <option value="1">4 stars</option>
-              <option value="1">5 stars</option>
+              <option value="2">2 stars</option>
+              <option value="3">3 stars</option>
+              <option value="4">4 stars</option>
+              <option value="5">5 stars</option>
             </select>
 
             <label>Comments</label>
@@ -62,6 +61,56 @@
           </fieldset>
         </form>
       </div>
+
+    <?php 
+      // Grab field values
+      $title = mysql_real_escape_string($_GET['title']);
+      $rating = mysql_real_escape_string($_GET['rating']);
+      $comments = mysql_real_escape_string($_GET['comments']);
+      $reviewer_name = mysql_real_escape_string($_GET['reviewer_name']);
+      $date = new DateTime();
+      $date->setTimestamp(time());
+      $date_time = $date->format('Y-m-d H:i:s');
+
+      if ( empty($title) 
+        || empty($rating)
+        || empty($comments)
+        || empty($reviewer_name)
+      ) {
+        echo "<div class=\"row\">
+                <div class=\"large-12 columns\">
+                  <p>
+                    All fields are required.
+                  </p>
+                </div>
+              </div>";
+      } else {
+        // Set-up SQL query 
+        $movie_statement = "SELECT id FROM Movie WHERE title=\"".$title."\";";
+        $mid_query = mysql_query($movie_statement, $db_connect);
+
+        if (mysql_num_rows($mid_query) == 0) {
+          print "This is not a valid movie.";
+        } else {
+          $mid_row = mysql_fetch_row($mid_query);
+          $mid = $mid_row[0];
+          $insert = "INSERT INTO Review (name, time, mid, rating, comment)
+          VALUES ('%s', '%s', '%s', '%s', '%s');";
+          $insert = sprintf($insert, $reviewer_name, $date_time, $mid, $rating, $comments);          
+
+
+          mysql_query($insert, $db_connect);
+          echo "<div class=\"row\">
+                <div class=\"large-12 columns\">
+                  <p>
+                    Thanks!
+                  </p>
+                </div>
+              </div>";
+        }
+      }
+     ?>
+
 
       <!-- Never forget to close an opened resource -->
       <?php 

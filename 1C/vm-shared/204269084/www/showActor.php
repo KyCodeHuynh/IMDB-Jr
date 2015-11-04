@@ -22,7 +22,6 @@
         die("Connection failed: " . $db_connect->connect_error);
       }
 
-      // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect);
@@ -83,10 +82,6 @@
               //     }
               //   }
               // }
-
-              // // TODO: PRINT OUT <a href> so that we can have the actors have links to their profiles.. 
-              // // CAN'T fully do it until "show Actors" page is created
-              // // Also --- the mid is part of the table so you can reference it with act_row[3]
 
               function printCharInfo($tbl_results) {
                 if (mysql_num_rows($tbl_results) == 0) {

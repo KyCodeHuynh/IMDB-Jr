@@ -45,8 +45,7 @@
           <label>Movie Title</label>
           <input type="text" name="title" autocomplete="off">
 
-          <!-- TODO: Use this date type across other pages too?
-          It automatically enforces valid numbers for months and days -->
+          <!-- It automatically enforces valid numbers for months and days -->
           <label>Year of Release</label>
           <input type="text" name="year" placeholder="YYYY-MM-DD" autocomplete="off">
 
@@ -102,8 +101,6 @@
         $insert = "INSERT INTO Movie (id, title, year, rating, company)
           VALUES (%s, '%s', '%s', '%s', '%s');";
         $insert = sprintf($insert, $movie_id, $title, $year, $rating, $company);
-
-        print $insert;
 
         // Debugging only
         // echo "<div class=\"row\">

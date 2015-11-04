@@ -22,7 +22,6 @@
         die("Connection failed: " . $db_connect->connect_error);
       }
 
-      // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect);
@@ -43,7 +42,7 @@
           </form>  
           <?php 
               function makeMovieTable($tbl_results) {
-                if (count($tbl_results) == 0) {
+                if (mysql_num_rows($tbl_results) == 0) {
                   print "Nothing was found for this query.";
                 }
                 // print out results in a table
@@ -54,7 +53,7 @@
 
                 // Create the first row - name and DOB
                 print "<tr class='bold'>";
-                print "<td>Title</td>";
+                print "<td>Movie Title</td>";
                 print "<td>Year</td>";
                 print "</tr>";
 
@@ -67,7 +66,7 @@
               }
 
               function makeActorTable($tbl_results) {
-                if (count($tbl_results) == 0) {
+                if (mysql_num_rows($tbl_results) == 0) {
                   print "Nothing was found for this query.";
                 }
                 // print out results in a table
@@ -78,7 +77,7 @@
 
                 // Create the first row - name and DOB
                 print "<tr class='bold'>";
-                print "<td>Name</td>";
+                print "<td>Actor Name</td>";
                 print "<td>Date of Birth</td>";
                 print "</tr>";
 
@@ -134,11 +133,19 @@
                 if (mysql_num_rows($title_results) > 0) {
                   makeMovieTable($title_results);
                 } else {
-                  $statement = "SELECT * FROM Movie WHERE title LIKE ".$and_words.";";
+                  $statement = "SELECT * FROM Movie WHERE title LIKE \"%".$sanitized."%\";";
                   $results = mysql_query($statement, $db_connect);  
                   if (mysql_num_rows($results) > 0) {
                     makeMovieTable($results);
-                  }     
+                  } else {
+                    $statement2 = "SELECT * FROM Movie WHERE title LIKE ".$and_words.";";
+                    $results2 = mysql_query($statement2, $db_connect);  
+                    if (mysql_num_rows($results2) > 0) {
+                      makeMovieTable($results2);
+                    }                                   
+                  }
+
+
                 }
 
                 // CHECKING ACTOR

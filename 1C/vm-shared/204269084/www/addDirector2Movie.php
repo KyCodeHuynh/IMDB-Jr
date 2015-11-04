@@ -22,7 +22,6 @@
         die("Connection failed: " . $db_connect->connect_error);
       }
 
-      // TODO: Switch to "CS143" for production!
       // Select which database we'll use
       // Specifying a link identifier lets it know which link to use
       mysql_select_db("CS143", $db_connect)
@@ -53,6 +52,59 @@
           </fieldset>
         </form>
       </div>
+
+      <?php 
+        // Grab field values
+        $title = mysql_real_escape_string($_GET['title']);
+        $first_name = mysql_real_escape_string($_GET['first_name']);
+        $last_name = mysql_real_escape_string($_GET['last_name']);
+
+        if ( empty($title) 
+          || empty($first_name)
+          || empty($last_name)
+        ) {
+          echo "<div class=\"row\">
+                  <div class=\"large-12 columns\">
+                    <p>
+                      All fields are required.
+                    </p>
+                  </div>
+                </div>";
+        } else {
+          // Set-up SQL query 
+          $movie_statement = "SELECT id FROM Movie WHERE title=\"".$title."\";";
+          $mid_query = mysql_query($movie_statement, $db_connect);
+
+          if (mysql_num_rows($mid_query) == 0) {
+            print "This is not a valid movie.";
+          } else {
+            $mid_row = mysql_fetch_row($mid_query);
+            $mid = $mid_row[0];
+
+            // Set-up SQL query 
+            $dir_state = "SELECT id FROM Director WHERE first=\"".$first_name."\" AND last=\"".$last_name."\";";
+            $dir_query = mysql_query($dir_state, $db_connect);
+
+            if (mysql_num_rows($dir_query) == 0) {
+              print "This is not a valid director.";
+            } else {
+              $dir_row = mysql_fetch_row($dir_query);
+              $did = $dir_row[0];
+              $insert = "INSERT INTO MovieDirector (mid, did) VALUES ('%s', '%s');";
+              $insert = sprintf($insert, $mid, $did);
+
+              mysql_query($insert, $db_connect);
+              echo "<div class=\"row\">
+                    <div class=\"large-12 columns\">
+                      <p>
+                        Thanks!
+                      </p>
+                    </div>
+                  </div>";
+            }
+          }
+        }
+       ?>
 
       <!-- Never forget to close an opened resource -->
       <?php 

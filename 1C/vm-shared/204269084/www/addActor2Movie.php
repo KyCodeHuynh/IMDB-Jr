@@ -48,11 +48,68 @@
             <label>Actor's Last Name</label>
             <input type="text" name="last_name" autocomplete="off">
 
+            <label>Actor's Role</label>
+            <input type="text" name="role" autocomplete="off">
+
             <input type="submit" class="small submit button" value="Submit">
             <input type="reset" class="small secondary button" value="Reset">
           </fieldset>
         </form>
       </div>
+
+    <?php 
+      // Grab field values
+      $title = mysql_real_escape_string($_GET['title']);
+      $first_name = mysql_real_escape_string($_GET['first_name']);
+      $last_name = mysql_real_escape_string($_GET['last_name']);
+      $role = mysql_real_escape_string($_GET['role']);
+
+      if ( empty($title) 
+        || empty($first_name)
+        || empty($last_name)
+        || empty($role)
+      ) {
+        echo "<div class=\"row\">
+                <div class=\"large-12 columns\">
+                  <p>
+                    All fields are required.
+                  </p>
+                </div>
+              </div>";
+      } else {
+        // Set-up SQL query 
+        $movie_statement = "SELECT id FROM Movie WHERE title=\"".$title."\";";
+        $mid_query = mysql_query($movie_statement, $db_connect);
+
+        if (mysql_num_rows($mid_query) == 0) {
+          print "This is not a valid movie.";
+        } else {
+          $mid_row = mysql_fetch_row($mid_query);
+          $mid = $mid_row[0];
+
+          // Set-up SQL query 
+          $actor_state = "SELECT id FROM Actor WHERE first=\"".$first_name."\" AND last=\"".$last_name."\";";
+          $act_query = mysql_query($actor_state, $db_connect);
+
+          if (mysql_num_rows($act_query) == 0) {
+            print "This is not a valid actor.";
+          } else {
+            $aid_row = mysql_fetch_row($act_query);
+            $aid = $aid_row[0];
+            $insert = "INSERT INTO MovieActor (mid, aid, role) VALUES ('%s', '%s', '%s');";
+            $insert = sprintf($insert, $mid, $aid, $role);          
+            mysql_query($insert, $db_connect);
+            echo "<div class=\"row\">
+                  <div class=\"large-12 columns\">
+                    <p>
+                      Thanks!
+                    </p>
+                  </div>
+                </div>";
+          }
+        }
+      }
+     ?>
 
       <!-- Never forget to close an opened resource -->
       <?php 
