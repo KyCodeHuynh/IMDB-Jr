@@ -135,7 +135,6 @@
                   makeMovieTable($title_results);
                 } else {
                   $statement = "SELECT * FROM Movie WHERE title LIKE ".$and_words.";";
-                  print $statement;
                   $results = mysql_query($statement, $db_connect);  
                   if (mysql_num_rows($results) > 0) {
                     makeMovieTable($results);
