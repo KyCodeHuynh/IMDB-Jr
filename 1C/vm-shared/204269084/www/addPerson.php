@@ -139,16 +139,35 @@
 
         if ($person_type == "Actor") {
           // Create SQL query of form INSERT INTO <table> VALUES (301, "Laro", ...)
-          $insert = "INSERT INTO Actor (id, last, first, sex, dob, dod) 
-            VALUES (%s, '%s', '%s', '%s', '%s', '%s');";
-          $insert = sprintf($insert, $person_id, $last_name, $first_name, $sex, $birth_date, $death_date);
+          // Quotes are needed for non-zero date entries to avoid all-zeros (0000-00-00)
+          // but will give all-zeros for what should be NULL if the input is NULL, 
+          // as MySQL will see 'NULL' instead of simply NULL.
+          // We thus only want to quote it if the date is non-null
+          if ($death_date != "NULL") {
+            $insert = "INSERT INTO Actor (id, last, first, sex, dob, dod) 
+              VALUES (%s, '%s', '%s', '%s', '%s', '%s');";
+            $insert = sprintf($insert, $person_id, $last_name, $first_name, $sex, $birth_date, $death_date);
+          }
+          else {
+            $insert = "INSERT INTO Actor (id, last, first, sex, dob, dod) 
+              VALUES (%s, '%s', '%s', '%s', '%s', %s);";
+            $insert = sprintf($insert, $person_id, $last_name, $first_name, $sex, $birth_date, $death_date);
+          }
         }
         else {
           // Director has a slightly different schema
           // TODO: Director insert is not working for some reason
-          $insert = "INSERT INTO Director (id, last, first, dob, dod) 
-            VALUES (%s, '%s', '%s', '%s', '%s');";
-          $insert = sprintf($insert, $person_id, $last_name, $first_name, $birth_date, $death_date);
+          
+          if ($death_date != "NULL") {
+            $insert = "INSERT INTO Director (id, last, first, dob, dod) 
+              VALUES (%s, '%s', '%s', '%s', '%s');";
+            $insert = sprintf($insert, $person_id, $last_name, $first_name, $birth_date, $death_date);
+          }
+          else {
+            $insert = "INSERT INTO Director (id, last, first, dob, dod) 
+              VALUES (%s, '%s', '%s', '%s', %s);";
+            $insert = sprintf($insert, $person_id, $last_name, $first_name, $birth_date, $death_date);
+          }
         }
         
         echo "<div class=\"row\">
