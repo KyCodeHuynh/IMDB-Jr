@@ -29,6 +29,22 @@
   </head>
 
   <body>
+
+    <div class="row">
+      <div class="large-12 large-centered columns">
+        <ul class="button-group">
+          <li><a class="button" href="search.php">Search</a></li>
+          <li><a class="button" href="showMovie.php">Show Movies</a></li>
+          <li><a class="button" href="showActor.php">Show Actors</a></li>
+          <li><a class="button" href="addPerson.php">Add an Actor or Director</a></li>
+          <li><a class="button" href="addMovie.php">Add a Movie</a></li>
+          <li><a class="button" href="addComments.php">Add Comments About a Movie</a></li>
+          <li><a class="button" href="addDirector2Movie.php">Associate a Director with a Movie</a></li>
+          <li><a class="button" href="addActor2Movie.php">Associate an Actor with a Movie</a></li>
+        </ul>
+      </div>
+    </div>
+
       <div class="row">
           <h1><a href="./addComments.php">Add Comments About a Movie</a></h1>
       </div>
